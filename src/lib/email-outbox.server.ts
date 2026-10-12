@@ -72,7 +72,6 @@ export async function sendGmail(to: string, subject: string, html: string, refId
   if (!lovableKey || !gmailKey) throw new Error("Gmail connection is not linked to this project");
   const raw = [
     `To: ${to}`,
-    `From: ${mimeHeader("Reimora")} <me>`,
     `Subject: ${mimeHeader(subject)}`,
     `X-Reimora-Notification: ${refId}`,
     "MIME-Version: 1.0",
@@ -80,7 +79,7 @@ export async function sendGmail(to: string, subject: string, html: string, refId
     "Content-Transfer-Encoding: base64",
     "",
     b64(html).replace(/(.{76})/g, "$1\r\n"),
-  ].join("\r\n").replace("From: Reimora <me>\r\n", "");
+  ].join("\r\n");
   const res = await fetch("https://connector-gateway.lovable.dev/google_mail/gmail/v1/users/me/messages/send", {
     method: "POST",
     headers: { Authorization: `Bearer ${lovableKey}`, "X-Connection-Api-Key": gmailKey, "Content-Type": "application/json" },

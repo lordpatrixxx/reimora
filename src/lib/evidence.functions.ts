@@ -245,89 +245,50 @@ export const extractExpense = createServerFn({ method: "POST" })
     return { applied: false, extraction };
   });
 
-/** Branded HTML email wrapper for Reimora notifications. */
-function emailHtml(subject: string, body: string): string {
-  const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  const paras = body.split(/\n{2,}|\n/).filter(Boolean).map((p) => `<p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:#2b3a34">${esc(p)}</p>`).join("");
-  return `<!doctype html><html><body style="margin:0;padding:0;background:#F7F8F4;font-family:Georgia,serif">
-  <div style="max-width:560px;margin:0 auto;padding:32px 16px">
-    <div style="background:#143D32;border-radius:16px 16px 0 0;padding:20px 24px">
-      <span style="display:inline-block;background:#D8F36A;color:#143D32;font-weight:700;border-radius:8px;padding:4px 10px;font-size:16px;font-family:Arial,sans-serif">R</span>
-      <span style="color:#F7F8F4;font-size:18px;font-weight:700;margin-left:8px;font-family:Arial,sans-serif">Reimora</span>
-    </div>
-    <div style="background:#ffffff;border:1px solid #e3e6de;border-top:0;border-radius:0 0 16px 16px;padding:24px">
-      <h1 style="margin:0 0 16px;font-size:18px;color:#143D32;font-family:Arial,sans-serif">${esc(subject)}</h1>
-      ${paras}
-      <p style="margin:24px 0 0;font-size:12px;color:#8a938c;border-top:1px solid #eef0ea;padding-top:12px">
-        Reimora · Student reimbursement &amp; advance settlement · You received this because of activity on your Reimora account.
-      </p>
-    </div>
-  </div></body></html>`;
-}
-
-const b64url = (s: string) =>
-  btoa(Array.from(new TextEncoder().encode(s), (b) => String.fromCharCode(b)).join(""))
-    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
-const mimeHeader = (v: string) => (/^[\x00-\x7F]*$/.test(v) ? v : `=?UTF-8?B?${b64url(v)}?=`);
-
-/** Send one email through the connected Gmail account via the connector gateway. */
-async function sendGmail(to: string, subject: string, html: string) {
-  const lovableKey = process.env['LOVABLE_API_KEY'];
-  const gmailKey = process.env['GOOGLE_MAIL_API_KEY'];
-  if (!lovableKey || !gmailKey) throw new Error("Gmail connection is not linked to this project");
-  const raw = [
-    `To: ${to}`,
-    `Subject: ${mimeHeader(subject)}`,
-    "MIME-Version: 1.0",
-    'Content-Type: text/html; charset="UTF-8"',
-    "",
-    html,
-  ].join("\r\n");
-  const res = await fetch("https://connector-gateway.lovable.dev/google_mail/gmail/v1/users/me/messages/send", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${lovableKey}`,
-      "X-Connection-Api-Key": gmailKey,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ raw: b64url(raw) }),
-  });
-  if (!res.ok) {
-    const t = await res.text().catch(() => "");
-    throw new Error(`Gmail send failed (${res.status}): ${t.slice(0, 200)}`);
-  }
-}
-
-/** Finance: attempt delivery of queued notifications. Honest about provider status. */
+/** Finance/admin: attempt delivery of due notifications now. Honest about provider status. */
 export const processNotifications = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const { data: isFin } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "finance" });
     if (!isFin) throw new Error("Forbidden");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const { data: rows } = await supabaseAdmin.from("notifications").select("*").in("status", ["queued", "failed"]).lt("attempts", 5).limit(50);
-    const configured = Boolean(process.env['LOVABLE_API_KEY'] && process.env['GOOGLE_MAIL_API_KEY']);
-    let sent = 0, failed = 0;
-    for (const n of rows ?? []) {
-      if (!configured) {
-        await supabaseAdmin.from("notifications").update({
-          status: "failed", attempts: n.attempts + 1, last_error: "Gmail connection is not linked to this project",
-        }).eq("id", n.id).eq("attempts", n.attempts);
-        failed++;
-        continue;
-      }
-      try {
-        await sendGmail(n.recipient_email, n.subject, emailHtml(n.subject, n.body));
-        await supabaseAdmin.from("notifications").update({
-          status: "sent", attempts: n.attempts + 1, last_error: null, sent_at: new Date().toISOString(),
-        }).eq("id", n.id).eq("attempts", n.attempts);
-        sent++;
-      } catch (e) {
-        await supabaseAdmin.from("notifications").update({
-          status: "failed", attempts: n.attempts + 1, last_error: e instanceof Error ? e.message.slice(0, 300) : "Send failed",
-        }).eq("id", n.id).eq("attempts", n.attempts);
-        failed++;
-      }
+    const { deliverDue } = await import("./email-outbox.server");
+    return deliverDue(supabaseAdmin);
+  });
+
+/** Any signed-in user: nudge the outbox right after an action (submit, decide, pay). Only sends rows the database already queued. */
+export const kickEmailDelivery = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async () => {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { deliverDue } = await import("./email-outbox.server");
+    const r = await deliverDue(supabaseAdmin, 10);
+    return { sent: r.sent, failed: r.failed, configured: r.configured };
+  });
+
+/** Admin: send a test email to the admin's own verified address and report Gmail's response. */
+export const sendTestEmail = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user: context.userId } as never);
+    if (!isAdmin) throw new Error("Forbidden");
+    const email = context.claims?.email as string | undefined;
+    if (!email) throw new Error("Your account has no email address");
+    const { sendGmail, emailHtml, emailConfigured } = await import("./email-outbox.server");
+    if (!emailConfigured()) return { ok: false, error: "Gmail connection is not linked to this project" };
+    try {
+      const subject = "Reimora: Test email";
+      const id = await sendGmail(email, subject, emailHtml({ subject, body: "This is a test from the Email delivery page.\nRecipient: " + email + "\nIf you can read this, Gmail accepted and delivered the message.", kind: "test", claim_id: null, access_request_id: null }), "test-" + Date.now());
+      return { ok: true, messageId: id, to: email };
+    } catch (e) {
+      return { ok: false, error: e instanceof Error ? e.message : "Send failed" };
     }
-    return { processed: rows?.length ?? 0, sent, failed, configured };
+  });
+
+/** Admin: whether the email sender is configured (no secret values exposed). */
+export const emailStatus = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async () => {
+    const { emailConfigured } = await import("./email-outbox.server");
+    return { configured: emailConfigured(), provider: "Gmail (connected account)" };
   });
