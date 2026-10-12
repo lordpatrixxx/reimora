@@ -272,8 +272,8 @@ const mimeHeader = (v: string) => (/^[\x00-\x7F]*$/.test(v) ? v : `=?UTF-8?B?${b
 
 /** Send one email through the connected Gmail account via the connector gateway. */
 async function sendGmail(to: string, subject: string, html: string) {
-  const lovableKey = process.env.LOVABLE_API_KEY;
-  const gmailKey = process.env.GOOGLE_MAIL_API_KEY;
+  const lovableKey = process.env['LOVABLE_API_KEY'];
+  const gmailKey = process.env['GOOGLE_MAIL_API_KEY'];
   if (!lovableKey || !gmailKey) throw new Error("Gmail connection is not linked to this project");
   const raw = [
     `To: ${to}`,
@@ -306,7 +306,7 @@ export const processNotifications = createServerFn({ method: "POST" })
     if (!isFin) throw new Error("Forbidden");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows } = await supabaseAdmin.from("notifications").select("*").in("status", ["queued", "failed"]).lt("attempts", 5).limit(50);
-    const configured = Boolean(process.env.LOVABLE_API_KEY && process.env.GOOGLE_MAIL_API_KEY);
+    const configured = Boolean(process.env['LOVABLE_API_KEY'] && process.env['GOOGLE_MAIL_API_KEY']);
     let sent = 0, failed = 0;
     for (const n of rows ?? []) {
       if (!configured) {
