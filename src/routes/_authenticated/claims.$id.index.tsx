@@ -11,7 +11,7 @@ import { EvidencePreview, type Attachment } from "@/components/app/evidence";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/_authenticated/claims/$id/")({
-  head: () => ({ meta: [{ title: "Claim — CampusSettle" }, { name: "description", content: "Claim details, review and settlement." }] }),
+  head: () => ({ meta: [{ title: "Claim — Reimora" }, { name: "description", content: "Claim details, review and settlement." }] }),
   component: ClaimDetail,
 });
 

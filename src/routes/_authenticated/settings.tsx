@@ -8,7 +8,7 @@ import { Card, Field, PageHeader, btn, errMsg, inputCls } from "@/components/app
 import { StudentOnboarding, RequestReviewerAccess } from "@/components/app/student-onboarding";
 
 export const Route = createFileRoute("/_authenticated/settings")({
-  head: () => ({ meta: [{ title: "Profile & settings — CampusSettle" }, { name: "description", content: "Your profile and team roles." }] }),
+  head: () => ({ meta: [{ title: "Profile & settings — Reimora" }, { name: "description", content: "Your profile and team roles." }] }),
   component: Settings,
 });
 

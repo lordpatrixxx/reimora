@@ -10,7 +10,7 @@ import { maskAccount } from "@/lib/money";
 import { Card, Empty, Field, PageHeader, btn, errMsg, inputCls } from "@/components/app/ui-bits";
 
 export const Route = createFileRoute("/_authenticated/students")({
-  head: () => ({ meta: [{ title: "Students & beneficiaries — CampusSettle" }, { name: "description", content: "Student and beneficiary records." }] }),
+  head: () => ({ meta: [{ title: "Students & beneficiaries — Reimora" }, { name: "description", content: "Student and beneficiary records." }] }),
   component: Students,
 });
 

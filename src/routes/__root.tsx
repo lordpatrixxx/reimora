@@ -80,7 +80,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "CampusSettle" },
+      { title: "Reimora" },
       { name: "description", content: "Student reimbursement and advance settlement, clearly managed." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

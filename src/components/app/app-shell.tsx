@@ -89,7 +89,7 @@ export function AppShell() {
       <div className="min-w-0">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-3 border-b border-border bg-background/85 px-4 backdrop-blur md:px-8">
           <button className="lg:hidden" onClick={() => setOpen(true)} aria-label="Open menu">{open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}</button>
-          <span className="text-sm font-semibold text-primary">{current?.label ?? "CampusSettle"}</span>
+          <span className="text-sm font-semibold text-primary">{current?.label ?? "Reimora"}</span>
           <form className="ml-auto hidden items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 md:flex"
             onSubmit={(e) => { e.preventDefault(); navigate({ to: "/claims", search: { q } }); }}>
             <Search className="h-3.5 w-3.5 text-muted-foreground" />
@@ -119,7 +119,7 @@ function Splash() {
           <span className="h-5 w-5 rounded-md bg-lime" />
           <div className="scan-line" />
         </div>
-        <p className="text-lg font-bold tracking-tight text-primary">CampusSettle</p>
+        <p className="text-lg font-bold tracking-tight text-primary">Reimora</p>
         <p className="text-xs text-muted-foreground">Preparing your workspace…</p>
       </div>
     </div>

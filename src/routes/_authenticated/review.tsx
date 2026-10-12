@@ -4,7 +4,7 @@ import { formatINR } from "@/lib/money";
 import { Card, Empty, PageHeader, StatusBadge } from "@/components/app/ui-bits";
 
 export const Route = createFileRoute("/_authenticated/review")({
-  head: () => ({ meta: [{ title: "Review queue — CampusSettle" }, { name: "description", content: "Claims awaiting faculty review." }] }),
+  head: () => ({ meta: [{ title: "Review queue — Reimora" }, { name: "description", content: "Claims awaiting faculty review." }] }),
   component: Review,
 });
 

@@ -8,10 +8,10 @@ import { cn } from "@/lib/utils";
 export const Route = createFileRoute("/demo")({
   head: () => ({
     meta: [
-      { title: "Explore the demo — CampusSettle" },
+      { title: "Explore the demo — Reimora" },
       { name: "description", content: "Walk through fictional reimbursement scenarios: receipts, UPI screenshots, duplicates, partial approvals and advances." },
-      { property: "og:title", content: "Explore the demo — CampusSettle" },
-      { property: "og:description", content: "Fictional scenarios showing how CampusSettle handles receipts, approvals and settlement." },
+      { property: "og:title", content: "Explore the demo — Reimora" },
+      { property: "og:description", content: "Fictional scenarios showing how Reimora handles receipts, approvals and settlement." },
     ],
   }),
   component: Demo,

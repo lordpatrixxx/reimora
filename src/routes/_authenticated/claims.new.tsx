@@ -8,7 +8,7 @@ import { StudentOnboarding } from "@/components/app/student-onboarding";
 import { ClaimWizard } from "@/components/app/claim-wizard";
 
 export const Route = createFileRoute("/_authenticated/claims/new")({
-  head: () => ({ meta: [{ title: "New claim — CampusSettle" }, { name: "description", content: "Create a reimbursement claim." }] }),
+  head: () => ({ meta: [{ title: "New claim — Reimora" }, { name: "description", content: "Create a reimbursement claim." }] }),
   component: NewClaim,
 });
 

@@ -6,7 +6,7 @@ export function Logo() {
       <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary">
         <span className="h-3 w-3 rounded-sm bg-lime" />
       </span>
-      <span className="text-[17px] font-bold tracking-tight text-primary">CampusSettle</span>
+      <span className="text-[17px] font-bold tracking-tight text-primary">Reimora</span>
     </Link>
   );
 }

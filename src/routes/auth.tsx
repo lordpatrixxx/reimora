@@ -9,10 +9,10 @@ import { btn, inputCls, errMsg } from "@/components/app/ui-bits";
 export const Route = createFileRoute("/auth")({
   head: () => ({
     meta: [
-      { title: "Sign in — CampusSettle" },
+      { title: "Sign in — Reimora" },
       { name: "description", content: "Sign in to submit, review and settle college reimbursements." },
-      { property: "og:title", content: "Sign in — CampusSettle" },
-      { property: "og:description", content: "Sign in to CampusSettle." },
+      { property: "og:title", content: "Sign in — Reimora" },
+      { property: "og:description", content: "Sign in to Reimora." },
     ],
   }),
   component: AuthPage,

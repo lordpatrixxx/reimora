@@ -5,9 +5,9 @@ import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "CampusSettle — College reimbursements, clearly managed" },
+      { title: "Reimora — College reimbursements, clearly managed" },
       { name: "description", content: "Scan receipts, route approvals and settle student advances with precise, auditable totals." },
-      { property: "og:title", content: "CampusSettle — College reimbursements, clearly managed" },
+      { property: "og:title", content: "Reimora — College reimbursements, clearly managed" },
       { property: "og:description", content: "AI-assisted receipt scanning, faculty review and advance settlement for college students." },
     ],
   }),

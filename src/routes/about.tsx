@@ -4,9 +4,9 @@ import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 export const Route = createFileRoute("/about")({
   head: () => ({
     meta: [
-      { title: "About — CampusSettle" },
-      { name: "description", content: "CampusSettle is a student project on reimbursement and advance settlement." },
-      { property: "og:title", content: "About — CampusSettle" },
+      { title: "About — Reimora" },
+      { name: "description", content: "Reimora is a student project on reimbursement and advance settlement." },
+      { property: "og:title", content: "About — Reimora" },
       { property: "og:description", content: "A student project on college reimbursement and advance settlement." },
     ],
   }),
@@ -31,7 +31,7 @@ function About() {
           A student project on fair, transparent settlement.
         </h1>
         <p className="mt-6 text-lg text-muted-foreground">
-          CampusSettle explores how receipt scanning, human review and precise settlement math can
+          Reimora explores how receipt scanning, human review and precise settlement math can
           make college reimbursements calmer for everyone involved.
         </p>
         <dl className="mt-12 divide-y divide-border overflow-hidden rounded-2xl border border-border bg-card shadow-soft">
