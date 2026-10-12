@@ -14,6 +14,137 @@ export type Database = {
   }
   public: {
     Tables: {
+      access_requests: {
+        Row: {
+          created_at: string
+          decided_at: string | null
+          decision_reason: string | null
+          details: Json
+          granted_scope_id: string | null
+          id: string
+          ref: string
+          requested_role: Database["public"]["Enums"]["app_role"]
+          reviewer: string | null
+          reviewer_name: string | null
+          scope_id: string | null
+          scope_text: string | null
+          status: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          decided_at?: string | null
+          decision_reason?: string | null
+          details?: Json
+          granted_scope_id?: string | null
+          id?: string
+          ref?: string
+          requested_role: Database["public"]["Enums"]["app_role"]
+          reviewer?: string | null
+          reviewer_name?: string | null
+          scope_id?: string | null
+          scope_text?: string | null
+          status?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          decided_at?: string | null
+          decision_reason?: string | null
+          details?: Json
+          granted_scope_id?: string | null
+          id?: string
+          ref?: string
+          requested_role?: Database["public"]["Enums"]["app_role"]
+          reviewer?: string | null
+          reviewer_name?: string | null
+          scope_id?: string | null
+          scope_text?: string | null
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "access_requests_granted_scope_id_fkey"
+            columns: ["granted_scope_id"]
+            isOneToOne: false
+            referencedRelation: "scopes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "access_requests_scope_id_fkey"
+            columns: ["scope_id"]
+            isOneToOne: false
+            referencedRelation: "scopes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      account_status: {
+        Row: {
+          reason: string | null
+          suspended: boolean
+          updated_at: string
+          updated_by: string | null
+          user_id: string
+        }
+        Insert: {
+          reason?: string | null
+          suspended?: boolean
+          updated_at?: string
+          updated_by?: string | null
+          user_id: string
+        }
+        Update: {
+          reason?: string | null
+          suspended?: boolean
+          updated_at?: string
+          updated_by?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "account_status_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: true
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      admin_audit: {
+        Row: {
+          action: string
+          actor: string | null
+          actor_name: string | null
+          created_at: string
+          details: Json | null
+          id: string
+          target_id: string | null
+          target_user: string | null
+        }
+        Insert: {
+          action: string
+          actor?: string | null
+          actor_name?: string | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_user?: string | null
+        }
+        Update: {
+          action?: string
+          actor?: string | null
+          actor_name?: string | null
+          created_at?: string
+          details?: Json | null
+          id?: string
+          target_id?: string | null
+          target_user?: string | null
+        }
+        Relationships: []
+      }
       advance_allocations: {
         Row: {
           advance_id: string
@@ -96,6 +227,35 @@ export type Database = {
             columns: ["student_id"]
             isOneToOne: false
             referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      approver_scopes: {
+        Row: {
+          created_at: string
+          granted_by: string | null
+          scope_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          granted_by?: string | null
+          scope_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          granted_by?: string | null
+          scope_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approver_scopes_scope_id_fkey"
+            columns: ["scope_id"]
+            isOneToOne: false
+            referencedRelation: "scopes"
             referencedColumns: ["id"]
           },
         ]
@@ -293,6 +453,7 @@ export type Database = {
           id: string
           purpose: string
           ref: string
+          scope_id: string | null
           settlement_status: Database["public"]["Enums"]["settlement_status"]
           status: Database["public"]["Enums"]["claim_status"]
           student_id: string
@@ -315,6 +476,7 @@ export type Database = {
           id?: string
           purpose?: string
           ref?: string
+          scope_id?: string | null
           settlement_status?: Database["public"]["Enums"]["settlement_status"]
           status?: Database["public"]["Enums"]["claim_status"]
           student_id: string
@@ -337,6 +499,7 @@ export type Database = {
           id?: string
           purpose?: string
           ref?: string
+          scope_id?: string | null
           settlement_status?: Database["public"]["Enums"]["settlement_status"]
           status?: Database["public"]["Enums"]["claim_status"]
           student_id?: string
@@ -351,6 +514,13 @@ export type Database = {
             columns: ["beneficiary_id"]
             isOneToOne: false
             referencedRelation: "beneficiaries"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "claims_scope_id_fkey"
+            columns: ["scope_id"]
+            isOneToOne: false
+            referencedRelation: "scopes"
             referencedColumns: ["id"]
           },
           {
@@ -521,8 +691,10 @@ export type Database = {
       }
       notifications: {
         Row: {
+          access_request_id: string | null
           attempts: number
           body: string
+          category: string
           claim_id: string | null
           created_at: string
           dedupe_key: string
@@ -537,8 +709,10 @@ export type Database = {
           subject: string
         }
         Insert: {
+          access_request_id?: string | null
           attempts?: number
           body: string
+          category?: string
           claim_id?: string | null
           created_at?: string
           dedupe_key: string
@@ -553,8 +727,10 @@ export type Database = {
           subject: string
         }
         Update: {
+          access_request_id?: string | null
           attempts?: number
           body?: string
+          category?: string
           claim_id?: string | null
           created_at?: string
           dedupe_key?: string
@@ -569,6 +745,13 @@ export type Database = {
           subject?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "notifications_access_request_id_fkey"
+            columns: ["access_request_id"]
+            isOneToOne: false
+            referencedRelation: "access_requests"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "notifications_claim_id_fkey"
             columns: ["claim_id"]
@@ -655,6 +838,30 @@ export type Database = {
         }
         Relationships: []
       }
+      scopes: {
+        Row: {
+          active: boolean
+          created_at: string
+          id: string
+          kind: string
+          name: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          kind: string
+          name: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          id?: string
+          kind?: string
+          name?: string
+        }
+        Relationships: []
+      }
       students: {
         Row: {
           college: string | null
@@ -721,13 +928,53 @@ export type Database = {
     }
     Functions: {
       actor_name: { Args: never; Returns: string }
+      admin_assign_claim: {
+        Args: { _claim: string; _reviewer: string }
+        Returns: undefined
+      }
+      admin_retry_notification: { Args: { _id: string }; Returns: undefined }
+      admin_set_approver_scope: {
+        Args: { _grant: boolean; _scope: string; _user: string }
+        Returns: undefined
+      }
+      admin_set_suspension: {
+        Args: { _reason: string; _suspend: boolean; _user: string }
+        Returns: undefined
+      }
+      admin_upsert_scope: {
+        Args: { _active: boolean; _id: string; _kind: string; _name: string }
+        Returns: string
+      }
       allocate_advance: {
         Args: { _advance: string; _amount: number; _claim: string }
         Returns: undefined
       }
+      audit: {
+        Args: {
+          _action: string
+          _details: Json
+          _target: string
+          _target_user: string
+        }
+        Returns: undefined
+      }
+      bootstrap_super_admin: {
+        Args: { _confirmed: string; _email: string; _id: string }
+        Returns: undefined
+      }
       can_edit_claim: { Args: { _claim: string }; Returns: boolean }
+      can_review_claim: { Args: { _claim: string }; Returns: boolean }
       can_view_claim: { Args: { _claim: string }; Returns: boolean }
       college_for_email: { Args: { _email: string }; Returns: string }
+      decide_access_request: {
+        Args: {
+          _approve: boolean
+          _id: string
+          _reason: string
+          _scope: string
+        }
+        Returns: undefined
+      }
       decide_claim: {
         Args: { _claim: string; _decision: string; _items: Json; _note: string }
         Returns: undefined
@@ -751,8 +998,44 @@ export type Database = {
         }
         Returns: boolean
       }
+      has_role_strict: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
+      in_my_scope: { Args: { _scope: string }; Returns: boolean }
+      is_admin: { Args: { _uid: string }; Returns: boolean }
+      is_own_claim: { Args: { _claim: string }; Returns: boolean }
       is_staff: { Args: { _uid: string }; Returns: boolean }
+      is_suspended: { Args: { _uid: string }; Returns: boolean }
       my_student_id: { Args: never; Returns: string }
+      notify_admins: {
+        Args: {
+          _body: string
+          _category: string
+          _claim: string
+          _dedupe: string
+          _kind: string
+          _request: string
+          _subject: string
+        }
+        Returns: undefined
+      }
+      notify_user: {
+        Args: {
+          _body: string
+          _category: string
+          _claim: string
+          _dedupe: string
+          _kind: string
+          _request: string
+          _subject: string
+          _user: string
+        }
+        Returns: undefined
+      }
       recompute_settlement: { Args: { _claim: string }; Returns: undefined }
       record_payment: {
         Args: {
@@ -782,7 +1065,17 @@ export type Database = {
         Returns: undefined
       }
       start_review: { Args: { _claim: string }; Returns: undefined }
+      submit_access_request: {
+        Args: {
+          _details: Json
+          _role: Database["public"]["Enums"]["app_role"]
+          _scope: string
+          _scope_text: string
+        }
+        Returns: string
+      }
       submit_claim: { Args: { _claim: string }; Returns: undefined }
+      withdraw_access_request: { Args: { _id: string }; Returns: undefined }
     }
     Enums: {
       app_role: "student" | "faculty" | "finance" | "super_admin"

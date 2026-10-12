@@ -43,6 +43,13 @@
       "when": 1791826985797,
       "tag": "0005_add_super_admin_enum",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1791827128164,
+      "tag": "0006_access_model",
+      "breakpoints": true
     }
   ]
 }
