@@ -630,27 +630,34 @@ export type Database = {
       }
       profiles: {
         Row: {
+          college: string | null
           created_at: string
           email: string | null
           full_name: string | null
           id: string
+          requested_role: Database["public"]["Enums"]["app_role"] | null
         }
         Insert: {
+          college?: string | null
           created_at?: string
           email?: string | null
           full_name?: string | null
           id: string
+          requested_role?: Database["public"]["Enums"]["app_role"] | null
         }
         Update: {
+          college?: string | null
           created_at?: string
           email?: string | null
           full_name?: string | null
           id?: string
+          requested_role?: Database["public"]["Enums"]["app_role"] | null
         }
         Relationships: []
       }
       students: {
         Row: {
+          college: string | null
           created_at: string
           created_by: string | null
           department: string
@@ -663,6 +670,7 @@ export type Database = {
           year: string | null
         }
         Insert: {
+          college?: string | null
           created_at?: string
           created_by?: string | null
           department?: string
@@ -675,6 +683,7 @@ export type Database = {
           year?: string | null
         }
         Update: {
+          college?: string | null
           created_at?: string
           created_by?: string | null
           department?: string
@@ -718,6 +727,7 @@ export type Database = {
       }
       can_edit_claim: { Args: { _claim: string }; Returns: boolean }
       can_view_claim: { Args: { _claim: string }; Returns: boolean }
+      college_for_email: { Args: { _email: string }; Returns: string }
       decide_claim: {
         Args: { _claim: string; _decision: string; _items: Json; _note: string }
         Returns: undefined
@@ -753,6 +763,10 @@ export type Database = {
           _paid_on: string
           _reference: string
         }
+        Returns: undefined
+      }
+      request_role: {
+        Args: { _role: Database["public"]["Enums"]["app_role"] }
         Returns: undefined
       }
       resolve_flag: {
