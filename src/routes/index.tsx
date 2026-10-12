@@ -9,6 +9,8 @@ export const Route = createFileRoute("/")({
       { name: "description", content: "Scan receipts, route approvals and settle student advances with precise, auditable totals." },
       { property: "og:title", content: "Reimora — College reimbursements, clearly managed" },
       { property: "og:description", content: "AI-assisted receipt scanning, faculty review and advance settlement for college students." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Index,
@@ -39,85 +41,83 @@ function HeroPreview() {
   useEffect(() => {
     if (phase !== "scan") return;
     setShown(0);
-    const timers = FIELDS.map((_, i) => setTimeout(() => setShown(i + 1), 700 + i * 350));
-    timers.push(setTimeout(() => setPhase("done"), 700 + FIELDS.length * 350 + 200));
+    const timers = FIELDS.map((_, i) => setTimeout(() => setShown(i + 1), 600 + i * 300));
+    timers.push(setTimeout(() => setPhase("done"), 600 + FIELDS.length * 300 + 150));
     return () => timers.forEach(clearTimeout);
   }, [phase]);
 
   return (
     <div className="relative animate-rise" style={{ animationDelay: "120ms" }}>
-      <div className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-accent/60 blur-2xl" aria-hidden />
-      <div className="rounded-3xl border border-border bg-card p-5 shadow-float md:p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Claim CS-0142</p>
-            <p className="font-semibold text-primary">Robotics club supplies</p>
-          </div>
+      <div className="absolute -inset-8 -z-10 rounded-[3rem] bg-lime/25 blur-3xl" aria-hidden />
+      <div className="overflow-hidden rounded-[1.75rem] border border-border bg-card shadow-float">
+        {/* window bar */}
+        <div className="flex items-center gap-3 border-b border-border bg-muted/60 px-4 py-2.5">
+          <div className="flex gap-1.5"><span className="h-2.5 w-2.5 rounded-full bg-border" /><span className="h-2.5 w-2.5 rounded-full bg-border" /><span className="h-2.5 w-2.5 rounded-full bg-border" /></div>
+          <span className="flex-1 truncate text-center font-mono text-[11px] text-muted-foreground">reimora · claim CS-0142</span>
           <SampleTag />
         </div>
 
-        <div className="mt-5 grid items-center gap-6 sm:grid-cols-[180px_1fr]">
-          {/* Receipt */}
-          <div className="relative mx-auto w-[180px] float-receipt">
-            <div className="relative overflow-hidden rounded-t-xl border border-border bg-background p-4 font-mono text-[10.5px] leading-relaxed text-foreground/80 shadow-soft receipt-edge pb-6">
-              {phase === "scan" && <span className="beam" />}
-              <p className="text-center text-[11px] font-bold tracking-wide">SHREE STATIONERS</p>
-              <p className="text-center text-muted-foreground">Akurdi · INV-2291</p>
-              <div className="my-2 border-t border-dashed border-border" />
-              {[["Notebooks ×6", "360"], ["Chart paper ×10", "150"], ["Markers", "240"]].map(([a, b]) => (
-                <div key={a} className="flex justify-between"><span>{a}</span><span className="tabular">{b}</span></div>
-              ))}
-              <div className="my-2 border-t border-dashed border-border" />
-              <div className="flex justify-between font-bold"><span>TOTAL</span><span className="tabular">750.00</span></div>
-              <p className="mt-1 text-muted-foreground">14/09/26 · UPI ✓</p>
+        <div className="p-5 md:p-6">
+          <div className="flex items-start justify-between gap-3">
+            <div>
+              <p className="font-display text-2xl text-primary">Robotics club supplies</p>
+              <p className="mt-0.5 text-xs text-muted-foreground">1 receipt · paid by UPI</p>
             </div>
+            <span className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold transition-colors ${phase === "scan" ? "bg-warning-soft text-warning" : "bg-success-soft text-primary"}`}>
+              <span className={`h-1.5 w-1.5 rounded-full ${phase === "scan" ? "animate-pulse bg-warning" : "bg-primary"}`} />
+              {phase === "scan" ? "Reading receipt" : "Ready to confirm"}
+            </span>
           </div>
 
-          {/* Extracted */}
-          <div>
-            <div className="mb-2 flex items-center justify-between">
-              <span className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
-                <span className={`h-1.5 w-1.5 rounded-full ${phase === "scan" ? "animate-pulse bg-warning" : "bg-primary"}`} />
-                {phase === "scan" ? "Reading receipt…" : "Read — waiting for your confirmation"}
-              </span>
-              <button onClick={() => setPhase("scan")} disabled={phase === "scan"} className="text-xs font-semibold text-primary hover:underline disabled:opacity-40">Replay</button>
+          <div className="mt-5 grid items-stretch gap-5 sm:grid-cols-[170px_1fr]">
+            <div className="relative mx-auto w-[170px] float-receipt">
+              <div className="relative overflow-hidden rounded-t-lg border border-border bg-background px-4 pb-6 pt-4 font-mono text-[10px] leading-[1.7] text-foreground/75 shadow-soft receipt-edge">
+                {phase === "scan" && <span className="beam" />}
+                <p className="text-center text-[11px] font-semibold text-foreground">SHREE STATIONERS</p>
+                <p className="text-center text-muted-foreground">Akurdi · INV-2291</p>
+                <div className="my-2 border-t border-dashed border-border" />
+                {[["Notebooks ×6", "360"], ["Chart paper ×10", "150"], ["Markers", "240"]].map(([x, y]) => (
+                  <div key={x} className="flex justify-between"><span>{x}</span><span className="tabular">{y}</span></div>
+                ))}
+                <div className="my-2 border-t border-dashed border-border" />
+                <div className="flex justify-between font-semibold text-foreground"><span>TOTAL</span><span className="tabular">750.00</span></div>
+                <p className="mt-1 text-muted-foreground">14/09/26 · UPI</p>
+              </div>
             </div>
-            <dl className="divide-y divide-border overflow-hidden rounded-xl border border-border">
-              {FIELDS.map(([k, v], i) => (
-                <div key={k} className="flex items-center justify-between px-3 py-2 text-sm">
-                  <dt className="text-muted-foreground">{k}</dt>
-                  {i < shown ? <dd className="animate-fade font-semibold tabular">{v}</dd> : <dd className="skeleton h-3 w-20" />}
-                </div>
-              ))}
-            </dl>
-            <div className={`mt-2 flex items-center gap-2 rounded-xl bg-accent px-3 py-2 text-xs transition-opacity duration-500 ${phase === "done" ? "opacity-100" : "opacity-0"}`}>
-              <span className="rounded-full bg-lime px-2 py-0.5 font-bold text-lime-foreground">Stationery</span>
-              <span className="text-muted-foreground">suggested category</span>
+
+            <div className="flex flex-col">
+              <div className="grid grid-cols-2 gap-2">
+                {FIELDS.map(([k, v], i) => (
+                  <div key={k} className="rounded-xl border border-border bg-background/60 px-3 py-2.5">
+                    <p className="text-[10px] font-medium uppercase tracking-wider text-muted-foreground">{k}</p>
+                    {i < shown ? <p className="animate-fade mt-0.5 truncate text-sm font-semibold tabular">{v}</p> : <div className="skeleton mt-1.5 h-3.5 w-16" />}
+                  </div>
+                ))}
+              </div>
+              <div className={`mt-2 flex items-center justify-between rounded-xl border border-dashed border-border px-3 py-2 text-xs transition-opacity duration-500 ${phase === "done" ? "opacity-100" : "opacity-0"}`}>
+                <span className="text-muted-foreground">Suggested category</span>
+                <span className="rounded-full bg-lime px-2 py-0.5 font-semibold text-lime-foreground">Stationery</span>
+              </div>
+              <button onClick={() => setPhase("scan")} disabled={phase === "scan"} className="mt-auto self-end pt-2 text-xs font-semibold text-muted-foreground transition hover:text-primary disabled:opacity-0">↻ Replay scan</button>
             </div>
           </div>
         </div>
 
-        {/* Progress */}
-        <div className="mt-6">
-          <div className="relative flex justify-between">
-            <div className="absolute left-2 right-2 top-[7px] h-0.5 bg-border" aria-hidden />
-            <div className="absolute left-2 top-[7px] h-0.5 bg-primary" style={{ width: "calc(66% - 8px)" }} aria-hidden />
-            {STAGES.map((s, i) => (
-              <div key={s} className="relative flex flex-col items-center gap-1.5">
-                <span className={`h-4 w-4 rounded-full border-2 ${i < 3 ? "border-primary bg-primary" : "border-border bg-card"}`} />
-                <span className={`text-[11px] font-semibold ${i < 3 ? "text-foreground" : "text-muted-foreground"}`}>{s}</span>
+        {/* footer: progress + settlement */}
+        <div className="grid gap-4 border-t border-border bg-muted/40 px-5 py-4 md:grid-cols-[1fr_auto] md:items-center md:px-6">
+          <div className="flex items-center gap-1.5">
+            {STAGES.map((st, i) => (
+              <div key={st} className="flex flex-1 flex-col gap-1.5">
+                <span className={`h-1 rounded-full ${i < 3 ? "bg-primary" : "bg-border"}`} />
+                <span className={`text-[10px] font-semibold ${i < 3 ? "text-foreground" : "text-muted-foreground"}`}>{st}</span>
               </div>
             ))}
           </div>
-        </div>
-
-        {/* Settlement */}
-        <div className="mt-5 grid grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-2 rounded-2xl bg-primary px-4 py-3 text-primary-foreground tabular">
-          <div><p className="text-[10px] uppercase tracking-wider opacity-60">Approved</p><p className="font-bold">₹2,650</p></div>
-          <span className="opacity-50">−</span>
-          <div><p className="text-[10px] uppercase tracking-wider opacity-60">Advance</p><p className="font-bold">₹2,000</p></div>
-          <span className="opacity-50">=</span>
-          <div className="text-right"><p className="text-[10px] uppercase tracking-wider opacity-60">To student</p><p className="text-lg font-bold">₹650</p></div>
+          <div className="flex items-baseline gap-2 tabular text-sm">
+            <span className="text-muted-foreground">₹2,650 − ₹2,000 advance =</span>
+            <span className="font-display text-2xl text-primary">₹650</span>
+            <span className="text-xs text-muted-foreground">to student</span>
+          </div>
         </div>
       </div>
     </div>
@@ -148,8 +148,8 @@ function Index() {
             <span className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1 text-xs font-semibold text-primary">
               <span className="h-1.5 w-1.5 rounded-full bg-lime ring-2 ring-primary/20" /> Receipts · Approvals · Settlement
             </span>
-            <h1 className="mt-6 font-display text-5xl leading-[1.02] text-primary md:text-7xl">
-              College reimbursements, <em className="italic">clearly</em> managed.
+            <h1 className="mt-6 font-display text-5xl leading-[0.98] text-primary md:text-7xl">
+              College reimbursements, <em>clearly</em> managed.
             </h1>
             <p className="mt-6 max-w-lg text-lg text-muted-foreground">
               Scan a receipt, confirm what AI found, and let faculty and finance take it from there —

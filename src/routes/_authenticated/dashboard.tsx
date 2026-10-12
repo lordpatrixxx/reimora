@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { Plus, ArrowUpRight } from "lucide-react";
+import { Plus, ArrowUpRight, Clock, Wallet, HandCoins, AlertCircle, FilePlus2, FileText, Send, PencilLine, CheckCircle2, Landmark } from "lucide-react";
 import { Bar, BarChart, ResponsiveContainer, Tooltip, XAxis, YAxis, Cell } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe } from "@/hooks/use-auth";
@@ -55,10 +55,10 @@ function Dashboard() {
 
   const canCreate = me.isFinance || !!me.student;
   const stats = [
-    { label: "Awaiting approval", value: formatINR(awaiting.reduce((s, c) => s + c.claimed_paise, 0)), sub: `${awaiting.length} claim${awaiting.length === 1 ? "" : "s"}` },
-    { label: "Approved, awaiting reimbursement", value: formatINR(awaitingReimb), sub: "Net of advances" },
-    { label: "Outstanding advances", value: formatINR(outstandingAdv), sub: "Unallocated + to return" },
-    { label: "Needs action", value: String(attention.length), sub: "Across your role" },
+    { label: "Awaiting approval", value: formatINR(awaiting.reduce((s, c) => s + c.claimed_paise, 0)), sub: `${awaiting.length} claim${awaiting.length === 1 ? "" : "s"}`, icon: Clock },
+    { label: "To be reimbursed", value: formatINR(awaitingReimb), sub: "Approved, net of advances", icon: Wallet },
+    { label: "Outstanding advances", value: formatINR(outstandingAdv), sub: "Unallocated or to return", icon: HandCoins },
+    { label: "Needs action", value: String(attention.length), sub: attention.length ? "Open the list below" : "All caught up", icon: AlertCircle },
   ];
 
   return (
@@ -69,27 +69,39 @@ function Dashboard() {
         action={canCreate && <Link to="/claims/new" className={btn.primary}><Plus className="h-4 w-4" /> Create claim</Link>}
       />
       <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-        {stats.map((s, i) => (
-          <Card key={s.label} className={i === 0 ? "bg-primary p-5 text-primary-foreground" : "p-5"}>
-            <p className={`text-xs font-semibold ${i === 0 ? "opacity-70" : "text-muted-foreground"}`}>{s.label}</p>
-            <p className="mt-2 text-2xl font-bold tabular">{s.value}</p>
-            <p className={`mt-1 text-xs ${i === 0 ? "opacity-60" : "text-muted-foreground"}`}>{s.sub}</p>
-          </Card>
-        ))}
+        {stats.map((s, i) => {
+          const Icon = s.icon;
+          const hero = i === 0;
+          return (
+            <Card key={s.label} className={hero ? "relative overflow-hidden border-transparent bg-primary p-5 text-primary-foreground" : "p-5"}>
+              {hero && <span className="pointer-events-none absolute -right-8 -top-8 h-28 w-28 rounded-full bg-lime/25 blur-2xl" aria-hidden />}
+              <div className="flex items-center justify-between">
+                <p className={`text-xs font-medium ${hero ? "opacity-75" : "text-muted-foreground"}`}>{s.label}</p>
+                <span className={`grid h-8 w-8 place-items-center rounded-full ${hero ? "bg-primary-foreground/10" : "bg-muted text-primary"}`}><Icon className="h-4 w-4" /></span>
+              </div>
+              <p className="mt-4 font-display text-3xl tabular">{s.value}</p>
+              <p className={`mt-1 text-xs ${hero ? "opacity-65" : "text-muted-foreground"}`}>{s.sub}</p>
+            </Card>
+          );
+        })}
       </div>
 
       {me.student && (
         <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
           {([
-            ["Create claim", null, "/claims/new"],
-            ["Drafts", claims.filter((c) => c.status === "draft" && c.student_id === me.student!.id).length, "/claims"],
-            ["Submitted", claims.filter((c) => (c.status === "submitted" || c.status === "under_review") && c.student_id === me.student!.id).length, "/claims"],
-            ["Needs changes", claims.filter((c) => c.status === "changes_requested" && c.student_id === me.student!.id).length, "/claims"],
-            ["Approved", claims.filter((c) => c.status === "approved" && c.student_id === me.student!.id).length, "/claims"],
-            ["Reimbursement & advances", null, "/settlements"],
-          ] as const).map(([l, n, to]) => (
-            <Link key={l} to={to} className="rounded-xl border border-border bg-card px-3 py-3 text-sm font-semibold transition hover:bg-muted">
-              {n !== null && <span className="block text-xl tabular text-primary">{n}</span>}{l}
+            ["Create claim", null, "/claims/new", FilePlus2],
+            ["Drafts", claims.filter((c) => c.status === "draft" && c.student_id === me.student!.id).length, "/claims", FileText],
+            ["Submitted", claims.filter((c) => (c.status === "submitted" || c.status === "under_review") && c.student_id === me.student!.id).length, "/claims", Send],
+            ["Needs changes", claims.filter((c) => c.status === "changes_requested" && c.student_id === me.student!.id).length, "/claims", PencilLine],
+            ["Approved", claims.filter((c) => c.status === "approved" && c.student_id === me.student!.id).length, "/claims", CheckCircle2],
+            ["Payments & advances", null, "/settlements", Landmark],
+          ] as const).map(([l, n, to, Icon], i) => (
+            <Link key={l} to={to} className={`group flex items-center gap-3 rounded-2xl border px-3 py-3 text-sm font-medium transition hover:-translate-y-0.5 hover:shadow-soft ${i === 0 ? "border-transparent bg-lime text-lime-foreground" : "border-border bg-card"}`}>
+              <span className={`grid h-9 w-9 shrink-0 place-items-center rounded-xl ${i === 0 ? "bg-lime-foreground/10" : "bg-muted text-primary"}`}><Icon className="h-4 w-4" /></span>
+              <span className="min-w-0 leading-tight">
+                {n !== null && <span className="block font-display text-lg tabular">{n}</span>}
+                <span className={n !== null ? "text-xs text-muted-foreground" : ""}>{l}</span>
+              </span>
             </Link>
           ))}
         </div>
@@ -103,7 +115,7 @@ function Dashboard() {
         <div className="mt-6 grid gap-4 lg:grid-cols-[1.4fr_1fr]">
           <Card className="p-5">
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="font-semibold text-primary">Recent claims</h2>
+              <h2 className="font-display text-xl text-primary">Recent claims</h2>
               <Link to="/claims" className="text-xs font-semibold text-muted-foreground hover:text-primary">View all</Link>
             </div>
             <ul className="divide-y divide-border">
@@ -122,7 +134,7 @@ function Dashboard() {
             </ul>
           </Card>
           <Card className="p-5">
-            <h2 className="mb-3 font-semibold text-primary">Needs your attention</h2>
+            <h2 className="mb-3 font-display text-xl text-primary">Needs your attention</h2>
             {attention.length === 0 ? <p className="text-sm text-muted-foreground">You're all caught up.</p> : (
               <ul className="space-y-2">
                 {attention.slice(0, 6).map((c) => (
@@ -137,7 +149,7 @@ function Dashboard() {
             )}
           </Card>
           <Card className="p-5">
-            <h2 className="mb-3 font-semibold text-primary">Spending by category</h2>
+            <h2 className="mb-3 font-display text-xl text-primary">Spending by category</h2>
             {chart.length === 0 ? <p className="text-sm text-muted-foreground">Appears once claims are submitted.</p> : (
               <div className="h-56">
                 <ResponsiveContainer>
@@ -154,7 +166,7 @@ function Dashboard() {
             )}
           </Card>
           <Card className="p-5">
-            <h2 className="mb-3 font-semibold text-primary">Activity</h2>
+            <h2 className="mb-3 font-display text-xl text-primary">Activity</h2>
             <ol className="relative space-y-4 border-l border-border pl-4">
               {events.map((e) => (
                 <li key={e.id} className="text-sm">
