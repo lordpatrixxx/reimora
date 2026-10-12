@@ -132,8 +132,8 @@ function Index() {
               with every rupee of approval and advance accounted for.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <a href="#how" className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-soft transition hover:-translate-y-0.5">Get started</a>
-              <a href="#demo" className="rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-primary transition hover:bg-muted">Explore demo</a>
+              <Link to="/auth" className="rounded-full bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-soft transition hover:-translate-y-0.5">Get started</Link>
+              <Link to="/demo" className="rounded-full border border-border bg-card px-6 py-3 text-sm font-semibold text-primary transition hover:bg-muted">Explore demo</Link>
             </div>
           </div>
           <HeroPreview />
@@ -172,7 +172,7 @@ function Index() {
             <div>
               <h2 className="font-display text-4xl md:text-5xl">The faculty view.</h2>
               <p className="mt-4 opacity-75">Every expense, attachment and flag in one place. Partial approvals require a reason.</p>
-              <p className="mt-6 text-sm opacity-60">Interactive demo with isolated fictional data arrives with sign-in.</p>
+              <p className="mt-6 text-sm opacity-60">Try every scenario in the demo — all fictional, no emails sent.</p>
             </div>
             <div className="rounded-2xl bg-card p-5 text-card-foreground shadow-float">
               <div className="mb-4 flex items-center justify-between"><span className="font-semibold">Review · CS-0139</span><SampleTag /></div>
