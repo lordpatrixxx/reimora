@@ -785,7 +785,7 @@ export type Database = {
       submit_claim: { Args: { _claim: string }; Returns: undefined }
     }
     Enums: {
-      app_role: "student" | "faculty" | "finance"
+      app_role: "student" | "faculty" | "finance" | "super_admin"
       claim_status:
         | "draft"
         | "submitted"
@@ -934,7 +934,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      app_role: ["student", "faculty", "finance"],
+      app_role: ["student", "faculty", "finance", "super_admin"],
       claim_status: [
         "draft",
         "submitted",
