@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { kickEmails } from "@/lib/kick-emails";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Fragment, useState } from "react";
 import { toast } from "sonner";
@@ -114,7 +115,8 @@ function Drawer({ r, onClose }: { r: R; onClose: () => void }) {
     const { error } = await supabase.rpc("decide_access_request", { _id: r.id, _approve: approve, _reason: reason, _scope: (scope || null) as string });
     setBusy(false);
     if (error) { toast.error(errMsg(error)); qc.invalidateQueries({ queryKey: ["admin-requests"] }); return; }
-    toast.success(approve ? "Access granted" : "Request rejected");
+    kickEmails();
+    toast.success(approve ? "Access granted. The applicant's email is queued." : "Request rejected. The applicant's email is queued.");
     qc.invalidateQueries({ queryKey: ["admin-requests"] });
     qc.invalidateQueries({ queryKey: ["pending-requests"] });
     qc.invalidateQueries({ queryKey: ["admin-people"] });

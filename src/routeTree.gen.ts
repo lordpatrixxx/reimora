@@ -25,6 +25,7 @@ import { Route as AuthenticatedSettlementsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedStudentsRouteImport } from './routes/_authenticated/students'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin.audit'
+import { Route as AuthenticatedAdminEmailRouteImport } from './routes/_authenticated/admin.email'
 import { Route as AuthenticatedAdminRequestsRouteImport } from './routes/_authenticated/admin.requests'
 import { Route as AuthenticatedAdminScopesRouteImport } from './routes/_authenticated/admin.scopes'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
@@ -32,6 +33,7 @@ import { Route as AuthenticatedClaimsIndexRouteImport } from './routes/_authenti
 import { Route as AuthenticatedClaimsNewRouteImport } from './routes/_authenticated/claims.new'
 import { Route as AuthenticatedClaimsIdIndexRouteImport } from './routes/_authenticated/claims.$id.index'
 import { Route as AuthenticatedClaimsIdEditRouteImport } from './routes/_authenticated/claims.$id.edit'
+import { Route as ApiPublicJobsDeliverEmailsRouteImport } from './routes/api/public/jobs/deliver-emails'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -114,6 +116,11 @@ const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminEmailRoute = AuthenticatedAdminEmailRouteImport.update({
+  id: '/email',
+  path: '/email',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminRequestsRoute =
   AuthenticatedAdminRequestsRouteImport.update({
     id: '/requests',
@@ -154,6 +161,12 @@ const AuthenticatedClaimsIdEditRoute =
     path: '/claims/$id/edit',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicJobsDeliverEmailsRoute =
+  ApiPublicJobsDeliverEmailsRouteImport.update({
+    id: '/api/public/jobs/deliver-emails',
+    path: '/api/public/jobs/deliver-emails',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -170,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/settlements': typeof AuthenticatedSettlementsRoute
   '/students': typeof AuthenticatedStudentsRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/email': typeof AuthenticatedAdminEmailRoute
   '/admin/requests': typeof AuthenticatedAdminRequestsRoute
   '/admin/scopes': typeof AuthenticatedAdminScopesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -177,6 +191,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/claims/': typeof AuthenticatedClaimsIndexRoute
   '/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
+  '/api/public/jobs/deliver-emails': typeof ApiPublicJobsDeliverEmailsRoute
   '/claims/$id/': typeof AuthenticatedClaimsIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -193,6 +208,7 @@ export interface FileRoutesByTo {
   '/settlements': typeof AuthenticatedSettlementsRoute
   '/students': typeof AuthenticatedStudentsRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/email': typeof AuthenticatedAdminEmailRoute
   '/admin/requests': typeof AuthenticatedAdminRequestsRoute
   '/admin/scopes': typeof AuthenticatedAdminScopesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -200,6 +216,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/claims': typeof AuthenticatedClaimsIndexRoute
   '/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
+  '/api/public/jobs/deliver-emails': typeof ApiPublicJobsDeliverEmailsRoute
   '/claims/$id': typeof AuthenticatedClaimsIdIndexRoute
 }
 export interface FileRoutesById {
@@ -219,6 +236,7 @@ export interface FileRoutesById {
   '/_authenticated/settlements': typeof AuthenticatedSettlementsRoute
   '/_authenticated/students': typeof AuthenticatedStudentsRoute
   '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/_authenticated/admin/email': typeof AuthenticatedAdminEmailRoute
   '/_authenticated/admin/requests': typeof AuthenticatedAdminRequestsRoute
   '/_authenticated/admin/scopes': typeof AuthenticatedAdminScopesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -226,6 +244,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/claims/': typeof AuthenticatedClaimsIndexRoute
   '/_authenticated/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
+  '/api/public/jobs/deliver-emails': typeof ApiPublicJobsDeliverEmailsRoute
   '/_authenticated/claims/$id/': typeof AuthenticatedClaimsIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -245,6 +264,7 @@ export interface FileRouteTypes {
     | '/settlements'
     | '/students'
     | '/admin/audit'
+    | '/admin/email'
     | '/admin/requests'
     | '/admin/scopes'
     | '/admin/users'
@@ -252,6 +272,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/claims/'
     | '/claims/$id/edit'
+    | '/api/public/jobs/deliver-emails'
     | '/claims/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -268,6 +289,7 @@ export interface FileRouteTypes {
     | '/settlements'
     | '/students'
     | '/admin/audit'
+    | '/admin/email'
     | '/admin/requests'
     | '/admin/scopes'
     | '/admin/users'
@@ -275,6 +297,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/claims'
     | '/claims/$id/edit'
+    | '/api/public/jobs/deliver-emails'
     | '/claims/$id'
   id:
     | '__root__'
@@ -293,6 +316,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settlements'
     | '/_authenticated/students'
     | '/_authenticated/admin/audit'
+    | '/_authenticated/admin/email'
     | '/_authenticated/admin/requests'
     | '/_authenticated/admin/scopes'
     | '/_authenticated/admin/users'
@@ -300,6 +324,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/'
     | '/_authenticated/claims/'
     | '/_authenticated/claims/$id/edit'
+    | '/api/public/jobs/deliver-emails'
     | '/_authenticated/claims/$id/'
   fileRoutesById: FileRoutesById
 }
@@ -309,6 +334,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
   DemoRoute: typeof DemoRoute
+  ApiPublicJobsDeliverEmailsRoute: typeof ApiPublicJobsDeliverEmailsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -425,6 +451,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAuditRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/email': {
+      id: '/_authenticated/admin/email'
+      path: '/email'
+      fullPath: '/admin/email'
+      preLoaderRoute: typeof AuthenticatedAdminEmailRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/requests': {
       id: '/_authenticated/admin/requests'
       path: '/requests'
@@ -474,11 +507,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedClaimsIdEditRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/jobs/deliver-emails': {
+      id: '/api/public/jobs/deliver-emails'
+      path: '/api/public/jobs/deliver-emails'
+      fullPath: '/api/public/jobs/deliver-emails'
+      preLoaderRoute: typeof ApiPublicJobsDeliverEmailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
+  AuthenticatedAdminEmailRoute: typeof AuthenticatedAdminEmailRoute
   AuthenticatedAdminRequestsRoute: typeof AuthenticatedAdminRequestsRoute
   AuthenticatedAdminScopesRoute: typeof AuthenticatedAdminScopesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
@@ -487,6 +528,7 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
+  AuthenticatedAdminEmailRoute: AuthenticatedAdminEmailRoute,
   AuthenticatedAdminRequestsRoute: AuthenticatedAdminRequestsRoute,
   AuthenticatedAdminScopesRoute: AuthenticatedAdminScopesRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
@@ -537,6 +579,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
   DemoRoute: DemoRoute,
+  ApiPublicJobsDeliverEmailsRoute: ApiPublicJobsDeliverEmailsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

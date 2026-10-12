@@ -394,6 +394,24 @@ export type Database = {
         }
         Relationships: []
       }
+      branches: {
+        Row: {
+          code: string
+          name: string
+          sort: number
+        }
+        Insert: {
+          code: string
+          name: string
+          sort: number
+        }
+        Update: {
+          code?: string
+          name?: string
+          sort?: number
+        }
+        Relationships: []
+      }
       claim_events: {
         Row: {
           action: string
@@ -700,7 +718,10 @@ export type Database = {
           dedupe_key: string
           id: string
           kind: string
+          last_attempt_at: string | null
           last_error: string | null
+          next_retry_at: string | null
+          provider_message_id: string | null
           read_at: string | null
           recipient_email: string
           recipient_user: string | null
@@ -718,7 +739,10 @@ export type Database = {
           dedupe_key: string
           id?: string
           kind: string
+          last_attempt_at?: string | null
           last_error?: string | null
+          next_retry_at?: string | null
+          provider_message_id?: string | null
           read_at?: string | null
           recipient_email: string
           recipient_user?: string | null
@@ -736,7 +760,10 @@ export type Database = {
           dedupe_key?: string
           id?: string
           kind?: string
+          last_attempt_at?: string | null
           last_error?: string | null
+          next_retry_at?: string | null
+          provider_message_id?: string | null
           read_at?: string | null
           recipient_email?: string
           recipient_user?: string | null
@@ -864,6 +891,7 @@ export type Database = {
       }
       students: {
         Row: {
+          branch_code: string | null
           college: string | null
           created_at: string
           created_by: string | null
@@ -877,6 +905,7 @@ export type Database = {
           year: string | null
         }
         Insert: {
+          branch_code?: string | null
           college?: string | null
           created_at?: string
           created_by?: string | null
@@ -890,6 +919,7 @@ export type Database = {
           year?: string | null
         }
         Update: {
+          branch_code?: string | null
           college?: string | null
           created_at?: string
           created_by?: string | null
@@ -902,7 +932,15 @@ export type Database = {
           user_id?: string | null
           year?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "students_branch_code_fkey"
+            columns: ["branch_code"]
+            isOneToOne: false
+            referencedRelation: "branches"
+            referencedColumns: ["code"]
+          },
+        ]
       }
       user_roles: {
         Row: {
