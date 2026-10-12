@@ -46,7 +46,7 @@ function Reports() {
     const text = [head, ...lines].map((l) => l.map((v) => `"${String(v ?? "").replace(/"/g, '""')}"`).join(",")).join("\n");
     const a = document.createElement("a");
     a.href = URL.createObjectURL(new Blob([text], { type: "text/csv" }));
-    a.download = `campussettle-report-${new Date().toISOString().slice(0, 10)}.csv`;
+    a.download = `reimora-report-${new Date().toISOString().slice(0, 10)}.csv`;
     a.click();
   }
   const set = (k: keyof typeof f) => (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => setF({ ...f, [k]: e.target.value });
