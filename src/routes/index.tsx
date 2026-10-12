@@ -104,8 +104,8 @@ function HeroPreview() {
         </div>
 
         {/* footer: progress + settlement */}
-        <div className="grid gap-4 border-t border-border bg-muted/40 px-5 py-4 md:grid-cols-[1fr_auto] md:items-center md:px-6">
-          <div className="flex items-center gap-1.5">
+        <div className="flex flex-col gap-4 border-t border-border bg-muted/40 px-5 py-4 sm:flex-row sm:items-center sm:justify-between md:px-6">
+          <div className="flex flex-1 items-center gap-1.5 sm:max-w-[240px]">
             {STAGES.map((st, i) => (
               <div key={st} className="flex flex-1 flex-col gap-1.5">
                 <span className={`h-1 rounded-full ${i < 3 ? "bg-primary" : "bg-border"}`} />
@@ -113,8 +113,8 @@ function HeroPreview() {
               </div>
             ))}
           </div>
-          <div className="flex items-baseline gap-2 tabular text-sm">
-            <span className="text-muted-foreground">₹2,650 − ₹2,000 advance =</span>
+          <div className="flex items-baseline gap-2 whitespace-nowrap tabular text-sm">
+            <span className="text-muted-foreground">₹2,650 − ₹2,000 =</span>
             <span className="font-display text-2xl text-primary">₹650</span>
             <span className="text-xs text-muted-foreground">to student</span>
           </div>
