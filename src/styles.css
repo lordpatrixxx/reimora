@@ -134,3 +134,30 @@ img, video, .preserve-colors { color-scheme: normal; filter: none; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
 }
+
+/* ---- Boot animation ---- */
+@keyframes boot-draw { from { stroke-dashoffset: 220; } to { stroke-dashoffset: 0; } }
+@keyframes boot-scan { 0% { transform: translateY(0); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { transform: translateY(46px); opacity: 0; } }
+@keyframes boot-pop { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: none; } }
+@keyframes boot-fade { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@keyframes drawer-in { from { transform: translateX(100%); } to { transform: none; } }
+@keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+@keyframes shimmer { 100% { transform: translateX(100%); } }
+@keyframes indeterminate { 0% { transform: translateX(-100%); } 100% { transform: translateX(250%); } }
+
+@utility boot-outline { stroke-dasharray: 220; animation: boot-draw .7s ease-out both; }
+@utility boot-scan { animation: boot-scan 1.1s .5s ease-in-out infinite; }
+@utility boot-check { animation: boot-pop .35s 1.2s cubic-bezier(.2,.9,.3,1.3) both; }
+@utility boot-word { animation: boot-fade .5s .9s ease-out both; }
+@utility animate-drawer { animation: drawer-in .28s cubic-bezier(.2,.7,.2,1) both; }
+@utility animate-fade { animation: fade-in .2s ease-out both; }
+@utility skeleton {
+  position: relative; overflow: hidden; background: var(--muted); border-radius: 0.75rem;
+  &::after { content: ""; position: absolute; inset: 0; transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, color-mix(in oklab, var(--card) 60%, transparent), transparent);
+    animation: shimmer 1.4s infinite; }
+}
+@utility progress-indeterminate {
+  position: relative; overflow: hidden; height: 4px; border-radius: 999px; background: var(--muted);
+  &::after { content: ""; position: absolute; inset: 0; width: 40%; border-radius: 999px; background: var(--primary); animation: indeterminate 1.2s ease-in-out infinite; }
+}
