@@ -90,6 +90,9 @@ export function ClaimWizard({ claimId }: { claimId: string | null }) {
 
 type Bundle = NonNullable<ReturnType<typeof useClaimBundle>["data"]>;
 
+/** Only known categories may be saved; anything else (e.g. a stray "-" from an old scan) becomes unchosen. */
+const validCategory = (c: string | null | undefined) => (CATEGORIES as readonly string[]).includes(c ?? "") ? c! : "";
+
 function Nav({ back, next, nextLabel = "Continue", disabled }: { back?: () => void; next: () => void; nextLabel?: string; disabled?: boolean }) {
   return (
     <div className="mt-6 flex justify-between">
