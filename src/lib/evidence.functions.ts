@@ -270,7 +270,7 @@ export const kickEmailDelivery = createServerFn({ method: "POST" })
 export const sendTestEmail = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _user: context.userId } as never);
+    const { data: isAdmin } = await context.supabase.rpc("is_admin", { _uid: context.userId });
     if (!isAdmin) throw new Error("Forbidden");
     const email = context.claims?.email as string | undefined;
     if (!email) throw new Error("Your account has no email address");
