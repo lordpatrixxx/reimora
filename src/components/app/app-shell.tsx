@@ -14,7 +14,7 @@ const nav: NavItem[] = [
   { to: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
   { to: "/claims/new", label: "New claim", icon: FilePlus2, show: (m) => m.isFinance || !!m.student },
   { to: "/claims", label: "Claims", icon: Files },
-  { to: "/review", label: "Review queue", icon: ClipboardCheck, show: (m) => m.isFaculty },
+  { to: "/review", label: "Bills to review", icon: ClipboardCheck, show: (m) => m.isFaculty },
   { to: "/students", label: "Students", icon: Users, show: (m) => m.isStaff },
   { to: "/settlements", label: "Advances & settlements", icon: Wallet, show: (m) => m.isFinance || m.isStudent },
   { to: "/reports", label: "Reports", icon: BarChart3, show: (m) => m.isStaff },
@@ -23,7 +23,7 @@ const nav: NavItem[] = [
 ];
 
 export function AppShell() {
-  const { data: me } = useMe();
+  const { data: me, isLoading } = useMe();
   const [open, setOpen] = useState(false);
   const path = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
@@ -38,6 +38,7 @@ export function AppShell() {
     },
   });
 
+  if (isLoading) return <Splash />;
   const items = me ? nav.filter((n) => !n.show || n.show(me)) : [];
   const current = [...nav].sort((a, b) => b.to.length - a.to.length).find((n) => path.startsWith(n.to));
 
@@ -105,6 +106,21 @@ export function AppShell() {
         <main className="mx-auto max-w-6xl px-4 py-6 md:px-8 md:py-8">
           <Outlet />
         </main>
+      </div>
+    </div>
+  );
+}
+
+function Splash() {
+  return (
+    <div className="grid min-h-screen place-items-center bg-background">
+      <div className="flex flex-col items-center gap-5 animate-rise">
+        <div className="relative grid h-16 w-16 place-items-center overflow-hidden rounded-2xl bg-primary shadow-float">
+          <span className="h-5 w-5 rounded-md bg-lime" />
+          <div className="scan-line" />
+        </div>
+        <p className="text-lg font-bold tracking-tight text-primary">CampusSettle</p>
+        <p className="text-xs text-muted-foreground">Preparing your workspace…</p>
       </div>
     </div>
   );
