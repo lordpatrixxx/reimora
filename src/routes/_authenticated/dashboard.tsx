@@ -78,7 +78,23 @@ function Dashboard() {
         ))}
       </div>
 
-      {!isLoading && claims.length === 0 ? (
+      {me.student && (
+        <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
+          {([
+            ["Create claim", null, "/claims/new"],
+            ["Drafts", claims.filter((c) => c.status === "draft" && c.student_id === me.student!.id).length, "/claims"],
+            ["Submitted", claims.filter((c) => (c.status === "submitted" || c.status === "under_review") && c.student_id === me.student!.id).length, "/claims"],
+            ["Needs changes", claims.filter((c) => c.status === "changes_requested" && c.student_id === me.student!.id).length, "/claims"],
+            ["Approved", claims.filter((c) => c.status === "approved" && c.student_id === me.student!.id).length, "/claims"],
+            ["Reimbursement & advances", null, "/settlements"],
+          ] as const).map(([l, n, to]) => (
+            <Link key={l} to={to} className="rounded-xl border border-border bg-card px-3 py-3 text-sm font-semibold transition hover:bg-muted">
+              {n !== null && <span className="block text-xl tabular text-primary">{n}</span>}{l}
+            </Link>
+          ))}
+        </div>
+      )}
+      {isLoading ? <div className="mt-6 grid gap-4 lg:grid-cols-2"><div className="skeleton h-64" /><div className="skeleton h-64" /></div> : claims.length === 0 ? (
         <div className="mt-6">
           <Empty title="No claims yet" body="Start with a receipt or UPI screenshot. AI reads the details; you confirm them before anything is submitted."
             action={canCreate && <Link to="/claims/new" className={btn.primary}>Create your first claim</Link>} />
