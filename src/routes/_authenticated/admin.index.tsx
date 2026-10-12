@@ -46,6 +46,18 @@ function AdminHome() {
     qc.invalidateQueries({ queryKey: ["admin-failed-mail"] });
   }
 
+  // Automatically attempt delivery of queued emails when the admin opens this page.
+  const process = useServerFn(processNotifications);
+  const ran = useRef(false);
+  useEffect(() => {
+    if (ran.current) return;
+    ran.current = true;
+    process().then((r) => {
+      if (r.sent > 0) toast.success(`${r.sent} email${r.sent === 1 ? "" : "s"} sent`);
+      if (r.sent > 0 || r.failed > 0) qc.invalidateQueries({ queryKey: ["admin-failed-mail"] });
+    }).catch(() => {});
+  }, [process, qc]);
+
   const stats = [
     { label: "Pending access requests", value: pending.length, icon: UserCheck, to: "/admin/requests" },
     { label: "Claims awaiting review", value: awaiting.length, icon: Files, to: "/claims" },
