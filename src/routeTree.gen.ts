@@ -14,6 +14,9 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedClaimsIndexRouteImport } from './routes/_authenticated/claims.index'
+import { Route as AuthenticatedClaimsNewRouteImport } from './routes/_authenticated/claims.new'
+import { Route as AuthenticatedClaimsIdEditRouteImport } from './routes/_authenticated/claims.$id.edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -39,18 +42,41 @@ const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   path: '/dashboard',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedClaimsIndexRoute =
+  AuthenticatedClaimsIndexRouteImport.update({
+    id: '/claims/',
+    path: '/claims/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedClaimsNewRoute = AuthenticatedClaimsNewRouteImport.update({
+  id: '/claims/new',
+  path: '/claims/new',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedClaimsIdEditRoute =
+  AuthenticatedClaimsIdEditRouteImport.update({
+    id: '/claims/$id/edit',
+    path: '/claims/$id/edit',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/claims/new': typeof AuthenticatedClaimsNewRoute
+  '/claims/': typeof AuthenticatedClaimsIndexRoute
+  '/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/claims/new': typeof AuthenticatedClaimsNewRoute
+  '/claims': typeof AuthenticatedClaimsIndexRoute
+  '/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -59,12 +85,29 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/claims/new': typeof AuthenticatedClaimsNewRoute
+  '/_authenticated/claims/': typeof AuthenticatedClaimsIndexRoute
+  '/_authenticated/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about' | '/auth' | '/dashboard'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/auth'
+    | '/dashboard'
+    | '/claims/new'
+    | '/claims/'
+    | '/claims/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about' | '/auth' | '/dashboard'
+  to:
+    | '/'
+    | '/about'
+    | '/auth'
+    | '/dashboard'
+    | '/claims/new'
+    | '/claims'
+    | '/claims/$id/edit'
   id:
     | '__root__'
     | '/'
@@ -72,6 +115,9 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/_authenticated/dashboard'
+    | '/_authenticated/claims/new'
+    | '/_authenticated/claims/'
+    | '/_authenticated/claims/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -118,15 +164,42 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/claims/': {
+      id: '/_authenticated/claims/'
+      path: '/claims'
+      fullPath: '/claims/'
+      preLoaderRoute: typeof AuthenticatedClaimsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/claims/new': {
+      id: '/_authenticated/claims/new'
+      path: '/claims/new'
+      fullPath: '/claims/new'
+      preLoaderRoute: typeof AuthenticatedClaimsNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/claims/$id/edit': {
+      id: '/_authenticated/claims/$id/edit'
+      path: '/claims/$id/edit'
+      fullPath: '/claims/$id/edit'
+      preLoaderRoute: typeof AuthenticatedClaimsIdEditRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedClaimsNewRoute: typeof AuthenticatedClaimsNewRoute
+  AuthenticatedClaimsIndexRoute: typeof AuthenticatedClaimsIndexRoute
+  AuthenticatedClaimsIdEditRoute: typeof AuthenticatedClaimsIdEditRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedClaimsNewRoute: AuthenticatedClaimsNewRoute,
+  AuthenticatedClaimsIndexRoute: AuthenticatedClaimsIndexRoute,
+  AuthenticatedClaimsIdEditRoute: AuthenticatedClaimsIdEditRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
