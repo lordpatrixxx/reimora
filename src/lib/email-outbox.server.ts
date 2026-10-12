@@ -27,10 +27,10 @@ export function emailHtml(n: Pick<Row, "subject" | "body" | "kind" | "claim_id" 
   for (const l of lines) {
     const bullet = /^\s*•\s*(.+)$/.exec(l);
     const kv = /^([A-Z][^:]{1,40}):\s(.+)$/.exec(l);
-    if (bullet) { flushRows(); items += `<li>${esc(bullet[1])}</li>`; continue; }
+    if (bullet) { flushRows(); items += `<li>${esc(bullet[1] ?? "")}</li>`; continue; }
     flushItems();
     if (kv && !/^Hi /.test(l)) {
-      rows += `<tr><td style="padding:7px 12px 7px 0;color:#6b766f;white-space:nowrap;vertical-align:top;border-bottom:1px solid #eef0ea">${esc(kv[1])}</td><td style="padding:7px 0;color:#14231d;font-weight:600;border-bottom:1px solid #eef0ea">${esc(kv[2])}</td></tr>`;
+      rows += `<tr><td style="padding:7px 12px 7px 0;color:#6b766f;white-space:nowrap;vertical-align:top;border-bottom:1px solid #eef0ea">${esc(kv[1] ?? "")}</td><td style="padding:7px 0;color:#14231d;font-weight:600;border-bottom:1px solid #eef0ea">${esc(kv[2] ?? "")}</td></tr>`;
     } else if (/:$/.test(l)) {
       flushRows(); html += `<p style="margin:8px 0 4px;font-size:13px;font-weight:700;color:#143D32;text-transform:uppercase;letter-spacing:.04em">${esc(l.slice(0, -1))}</p>`;
     } else {
