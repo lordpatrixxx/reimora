@@ -250,10 +250,10 @@ function ReviewExpense({ bundle, expense: e, refetch }: { bundle: Bundle; expens
   const rescan = e.extraction_rescan as Extraction | null;
   const [f, setF] = useState({
     vendor: e.vendor ?? "", amount: paiseToInput(e.amount_paise), date: e.expense_date ?? "", invoice: e.invoice_no ?? "",
-    txn: e.txn_ref ?? "", category: e.category ?? "", description: e.description ?? "",
+    txn: e.txn_ref ?? "", category: validCategory(e.category), description: e.description ?? "",
   });
   useEffect(() => {
-    setF({ vendor: e.vendor ?? "", amount: paiseToInput(e.amount_paise), date: e.expense_date ?? "", invoice: e.invoice_no ?? "", txn: e.txn_ref ?? "", category: e.category ?? "", description: e.description ?? "" });
+    setF({ vendor: e.vendor ?? "", amount: paiseToInput(e.amount_paise), date: e.expense_date ?? "", invoice: e.invoice_no ?? "", txn: e.txn_ref ?? "", category: validCategory(e.category), description: e.description ?? "" });
   }, [e.updated_at]);
 
   const attention = useMemo(() => {
@@ -283,7 +283,7 @@ function ReviewExpense({ bundle, expense: e, refetch }: { bundle: Bundle; expens
     const { data: u } = await supabase.auth.getUser();
     const { error } = await supabase.from("expenses").update({
       vendor: f.vendor || null, amount_paise: amount, expense_date: f.date || null, invoice_no: f.invoice || null,
-      txn_ref: f.txn || null, category: (f.category || null) as never, description: f.description,
+      txn_ref: f.txn || null, category: (validCategory(f.category) || null) as never, description: f.description,
       confirmed_at: confirm ? new Date().toISOString() : null, confirmed_by: confirm ? (u.user?.id ?? null) : null,
     }).eq("id", e.id);
     if (error) return toast.error(errMsg(error));
