@@ -18,6 +18,8 @@ const statusStyles: Record<string, string> = {
   exact: "bg-destructive-soft text-destructive",
   possible: "bg-warning-soft text-warning",
   mismatch: "bg-warning-soft text-warning",
+  pending_access: "bg-warning-soft text-warning",
+  withdrawn: "bg-muted text-muted-foreground",
 };
 const labels: Record<string, string> = {
   under_review: "Under review",
@@ -28,6 +30,10 @@ const labels: Record<string, string> = {
   exact: "Exact duplicate",
   possible: "Possible match",
   mismatch: "Needs attention",
+  pending_access: "Pending",
+  submitted: "Submitted",
+  approved: "Claim approved",
+  settled: "Settled",
 };
 
 export function StatusBadge({ status, className }: { status: string; className?: string }) {
