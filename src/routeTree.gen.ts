@@ -10,11 +10,21 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedClaimsIndexRouteImport } from './routes/_authenticated/claims.index'
+import { Route as AuthenticatedClaimsNewRouteImport } from './routes/_authenticated/claims.new'
+import { Route as AuthenticatedClaimsIdEditRouteImport } from './routes/_authenticated/claims.$id.edit'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -22,31 +32,99 @@ const AboutRoute = AboutRouteImport.update({
   path: '/about',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedClaimsIndexRoute =
+  AuthenticatedClaimsIndexRouteImport.update({
+    id: '/claims/',
+    path: '/claims/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedClaimsNewRoute = AuthenticatedClaimsNewRouteImport.update({
+  id: '/claims/new',
+  path: '/claims/new',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedClaimsIdEditRoute =
+  AuthenticatedClaimsIdEditRouteImport.update({
+    id: '/claims/$id/edit',
+    path: '/claims/$id/edit',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/claims/new': typeof AuthenticatedClaimsNewRoute
+  '/claims/': typeof AuthenticatedClaimsIndexRoute
+  '/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
+  '/dashboard': typeof AuthenticatedDashboardRoute
+  '/claims/new': typeof AuthenticatedClaimsNewRoute
+  '/claims': typeof AuthenticatedClaimsIndexRoute
+  '/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
+  '/auth': typeof AuthRoute
+  '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/claims/new': typeof AuthenticatedClaimsNewRoute
+  '/_authenticated/claims/': typeof AuthenticatedClaimsIndexRoute
+  '/_authenticated/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/about'
+  fullPaths:
+    | '/'
+    | '/about'
+    | '/auth'
+    | '/dashboard'
+    | '/claims/new'
+    | '/claims/'
+    | '/claims/$id/edit'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/about'
-  id: '__root__' | '/' | '/about'
+  to:
+    | '/'
+    | '/about'
+    | '/auth'
+    | '/dashboard'
+    | '/claims/new'
+    | '/claims'
+    | '/claims/$id/edit'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/about'
+    | '/auth'
+    | '/_authenticated/dashboard'
+    | '/_authenticated/claims/new'
+    | '/_authenticated/claims/'
+    | '/_authenticated/claims/$id/edit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
+  AuthRoute: typeof AuthRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -58,6 +136,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/about': {
       id: '/about'
       path: '/about'
@@ -65,12 +150,66 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AboutRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/claims/': {
+      id: '/_authenticated/claims/'
+      path: '/claims'
+      fullPath: '/claims/'
+      preLoaderRoute: typeof AuthenticatedClaimsIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/claims/new': {
+      id: '/_authenticated/claims/new'
+      path: '/claims/new'
+      fullPath: '/claims/new'
+      preLoaderRoute: typeof AuthenticatedClaimsNewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/claims/$id/edit': {
+      id: '/_authenticated/claims/$id/edit'
+      path: '/claims/$id/edit'
+      fullPath: '/claims/$id/edit'
+      preLoaderRoute: typeof AuthenticatedClaimsIdEditRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedClaimsNewRoute: typeof AuthenticatedClaimsNewRoute
+  AuthenticatedClaimsIndexRoute: typeof AuthenticatedClaimsIndexRoute
+  AuthenticatedClaimsIdEditRoute: typeof AuthenticatedClaimsIdEditRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedClaimsNewRoute: AuthenticatedClaimsNewRoute,
+  AuthenticatedClaimsIndexRoute: AuthenticatedClaimsIndexRoute,
+  AuthenticatedClaimsIdEditRoute: AuthenticatedClaimsIdEditRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
+  AuthRoute: AuthRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
