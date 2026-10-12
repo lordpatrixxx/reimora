@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { lovable } from "@/integrations/lovable/index";
 import { Logo } from "@/components/site-chrome";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { btn, inputCls, errMsg } from "@/components/app/ui-bits";
 
 export const Route = createFileRoute("/auth")({
@@ -67,7 +68,7 @@ function AuthPage() {
   return (
     <div className="grid min-h-screen lg:grid-cols-2">
       <div className="flex flex-col justify-between p-8">
-        <Logo />
+        <div className="flex items-center justify-between"><Logo /><ThemeToggle /></div>
         <div className="mx-auto w-full max-w-sm animate-rise">
           <h1 className="font-display text-4xl text-primary">{mode === "in" ? "Welcome back." : "Create your account."}</h1>
           <p className="mt-2 text-sm text-muted-foreground">

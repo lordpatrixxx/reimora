@@ -1,4 +1,5 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import {
@@ -99,6 +100,7 @@ export function AppShell() {
             <Bell className="h-4 w-4" strokeWidth={1.75} />
             {unread > 0 && <span className="absolute right-1.5 top-1.5 h-2 w-2 rounded-full bg-lime ring-2 ring-background" />}
           </Link>
+          <ThemeToggle />
           <Link to="/settings" className="grid h-8 w-8 place-items-center rounded-full bg-primary text-xs font-bold text-primary-foreground">
             {(me?.profile?.full_name ?? me?.user.email ?? "?").charAt(0).toUpperCase()}
           </Link>
