@@ -78,6 +78,13 @@
       "when": 1791831995020,
       "tag": "0010_migration",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1791832663199,
+      "tag": "0011_fix_submit_claim_category_cast",
+      "breakpoints": true
     }
   ]
 }
