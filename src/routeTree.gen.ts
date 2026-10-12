@@ -16,6 +16,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedClaimsIndexRouteImport } from './routes/_authenticated/claims.index'
 import { Route as AuthenticatedClaimsNewRouteImport } from './routes/_authenticated/claims.new'
+import { Route as AuthenticatedClaimsIdIndexRouteImport } from './routes/_authenticated/claims.$id.index'
 import { Route as AuthenticatedClaimsIdEditRouteImport } from './routes/_authenticated/claims.$id.edit'
 
 const IndexRoute = IndexRouteImport.update({
@@ -53,6 +54,12 @@ const AuthenticatedClaimsNewRoute = AuthenticatedClaimsNewRouteImport.update({
   path: '/claims/new',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedClaimsIdIndexRoute =
+  AuthenticatedClaimsIdIndexRouteImport.update({
+    id: '/claims/$id/',
+    path: '/claims/$id/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedClaimsIdEditRoute =
   AuthenticatedClaimsIdEditRouteImport.update({
     id: '/claims/$id/edit',
@@ -68,6 +75,7 @@ export interface FileRoutesByFullPath {
   '/claims/new': typeof AuthenticatedClaimsNewRoute
   '/claims/': typeof AuthenticatedClaimsIndexRoute
   '/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
+  '/claims/$id/': typeof AuthenticatedClaimsIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -77,6 +85,7 @@ export interface FileRoutesByTo {
   '/claims/new': typeof AuthenticatedClaimsNewRoute
   '/claims': typeof AuthenticatedClaimsIndexRoute
   '/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
+  '/claims/$id': typeof AuthenticatedClaimsIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -88,6 +97,7 @@ export interface FileRoutesById {
   '/_authenticated/claims/new': typeof AuthenticatedClaimsNewRoute
   '/_authenticated/claims/': typeof AuthenticatedClaimsIndexRoute
   '/_authenticated/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
+  '/_authenticated/claims/$id/': typeof AuthenticatedClaimsIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -99,6 +109,7 @@ export interface FileRouteTypes {
     | '/claims/new'
     | '/claims/'
     | '/claims/$id/edit'
+    | '/claims/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -108,6 +119,7 @@ export interface FileRouteTypes {
     | '/claims/new'
     | '/claims'
     | '/claims/$id/edit'
+    | '/claims/$id'
   id:
     | '__root__'
     | '/'
@@ -118,6 +130,7 @@ export interface FileRouteTypes {
     | '/_authenticated/claims/new'
     | '/_authenticated/claims/'
     | '/_authenticated/claims/$id/edit'
+    | '/_authenticated/claims/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -178,6 +191,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedClaimsNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/claims/$id/': {
+      id: '/_authenticated/claims/$id/'
+      path: '/claims/$id'
+      fullPath: '/claims/$id/'
+      preLoaderRoute: typeof AuthenticatedClaimsIdIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/claims/$id/edit': {
       id: '/_authenticated/claims/$id/edit'
       path: '/claims/$id/edit'
@@ -193,6 +213,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedClaimsNewRoute: typeof AuthenticatedClaimsNewRoute
   AuthenticatedClaimsIndexRoute: typeof AuthenticatedClaimsIndexRoute
   AuthenticatedClaimsIdEditRoute: typeof AuthenticatedClaimsIdEditRoute
+  AuthenticatedClaimsIdIndexRoute: typeof AuthenticatedClaimsIdIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -200,6 +221,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedClaimsNewRoute: AuthenticatedClaimsNewRoute,
   AuthenticatedClaimsIndexRoute: AuthenticatedClaimsIndexRoute,
   AuthenticatedClaimsIdEditRoute: AuthenticatedClaimsIdEditRoute,
+  AuthenticatedClaimsIdIndexRoute: AuthenticatedClaimsIdIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
