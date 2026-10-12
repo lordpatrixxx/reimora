@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 
-export const claimSelect = "*, students(id, full_name, prn, department, year, division, email), expenses(id, category, amount_paise, approved_paise)";
+export const claimSelect = "*, students(id, full_name, prn, department, year, division, email), expenses(id, category, amount_paise, approved_paise), scopes:scope_id(name, kind)";
 
 export function useClaims() {
   return useQuery({

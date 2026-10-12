@@ -14,6 +14,8 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as DemoRouteImport } from './routes/demo'
+import { Route as AuthenticatedAccessRouteImport } from './routes/_authenticated/access'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
 import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
 import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
@@ -21,6 +23,11 @@ import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
 import { Route as AuthenticatedSettlementsRouteImport } from './routes/_authenticated/settlements'
 import { Route as AuthenticatedStudentsRouteImport } from './routes/_authenticated/students'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin.audit'
+import { Route as AuthenticatedAdminRequestsRouteImport } from './routes/_authenticated/admin.requests'
+import { Route as AuthenticatedAdminScopesRouteImport } from './routes/_authenticated/admin.scopes'
+import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
 import { Route as AuthenticatedClaimsIndexRouteImport } from './routes/_authenticated/claims.index'
 import { Route as AuthenticatedClaimsNewRouteImport } from './routes/_authenticated/claims.new'
 import { Route as AuthenticatedClaimsIdIndexRouteImport } from './routes/_authenticated/claims.$id.index'
@@ -49,6 +56,16 @@ const DemoRoute = DemoRouteImport.update({
   id: '/demo',
   path: '/demo',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAccessRoute = AuthenticatedAccessRouteImport.update({
+  id: '/access',
+  path: '/access',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
@@ -87,6 +104,33 @@ const AuthenticatedStudentsRoute = AuthenticatedStudentsRouteImport.update({
   path: '/students',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
+  id: '/audit',
+  path: '/audit',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminRequestsRoute =
+  AuthenticatedAdminRequestsRouteImport.update({
+    id: '/requests',
+    path: '/requests',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminScopesRoute =
+  AuthenticatedAdminScopesRouteImport.update({
+    id: '/scopes',
+    path: '/scopes',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminUsersRoute = AuthenticatedAdminUsersRouteImport.update({
+  id: '/users',
+  path: '/users',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedClaimsIndexRoute =
   AuthenticatedClaimsIndexRouteImport.update({
     id: '/claims/',
@@ -116,6 +160,8 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/demo': typeof DemoRoute
+  '/access': typeof AuthenticatedAccessRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/reports': typeof AuthenticatedReportsRoute
@@ -123,7 +169,12 @@ export interface FileRoutesByFullPath {
   '/settings': typeof AuthenticatedSettingsRoute
   '/settlements': typeof AuthenticatedSettlementsRoute
   '/students': typeof AuthenticatedStudentsRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/requests': typeof AuthenticatedAdminRequestsRoute
+  '/admin/scopes': typeof AuthenticatedAdminScopesRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/claims/new': typeof AuthenticatedClaimsNewRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
   '/claims/': typeof AuthenticatedClaimsIndexRoute
   '/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
   '/claims/$id/': typeof AuthenticatedClaimsIdIndexRoute
@@ -133,6 +184,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/demo': typeof DemoRoute
+  '/access': typeof AuthenticatedAccessRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
   '/notifications': typeof AuthenticatedNotificationsRoute
   '/reports': typeof AuthenticatedReportsRoute
@@ -140,7 +192,12 @@ export interface FileRoutesByTo {
   '/settings': typeof AuthenticatedSettingsRoute
   '/settlements': typeof AuthenticatedSettlementsRoute
   '/students': typeof AuthenticatedStudentsRoute
+  '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/requests': typeof AuthenticatedAdminRequestsRoute
+  '/admin/scopes': typeof AuthenticatedAdminScopesRoute
+  '/admin/users': typeof AuthenticatedAdminUsersRoute
   '/claims/new': typeof AuthenticatedClaimsNewRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
   '/claims': typeof AuthenticatedClaimsIndexRoute
   '/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
   '/claims/$id': typeof AuthenticatedClaimsIdIndexRoute
@@ -152,6 +209,8 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
   '/demo': typeof DemoRoute
+  '/_authenticated/access': typeof AuthenticatedAccessRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
   '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
   '/_authenticated/reports': typeof AuthenticatedReportsRoute
@@ -159,7 +218,12 @@ export interface FileRoutesById {
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/settlements': typeof AuthenticatedSettlementsRoute
   '/_authenticated/students': typeof AuthenticatedStudentsRoute
+  '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/_authenticated/admin/requests': typeof AuthenticatedAdminRequestsRoute
+  '/_authenticated/admin/scopes': typeof AuthenticatedAdminScopesRoute
+  '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
   '/_authenticated/claims/new': typeof AuthenticatedClaimsNewRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/claims/': typeof AuthenticatedClaimsIndexRoute
   '/_authenticated/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
   '/_authenticated/claims/$id/': typeof AuthenticatedClaimsIdIndexRoute
@@ -171,6 +235,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/demo'
+    | '/access'
+    | '/admin'
     | '/dashboard'
     | '/notifications'
     | '/reports'
@@ -178,7 +244,12 @@ export interface FileRouteTypes {
     | '/settings'
     | '/settlements'
     | '/students'
+    | '/admin/audit'
+    | '/admin/requests'
+    | '/admin/scopes'
+    | '/admin/users'
     | '/claims/new'
+    | '/admin/'
     | '/claims/'
     | '/claims/$id/edit'
     | '/claims/$id/'
@@ -188,6 +259,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/demo'
+    | '/access'
     | '/dashboard'
     | '/notifications'
     | '/reports'
@@ -195,7 +267,12 @@ export interface FileRouteTypes {
     | '/settings'
     | '/settlements'
     | '/students'
+    | '/admin/audit'
+    | '/admin/requests'
+    | '/admin/scopes'
+    | '/admin/users'
     | '/claims/new'
+    | '/admin'
     | '/claims'
     | '/claims/$id/edit'
     | '/claims/$id'
@@ -206,6 +283,8 @@ export interface FileRouteTypes {
     | '/about'
     | '/auth'
     | '/demo'
+    | '/_authenticated/access'
+    | '/_authenticated/admin'
     | '/_authenticated/dashboard'
     | '/_authenticated/notifications'
     | '/_authenticated/reports'
@@ -213,7 +292,12 @@ export interface FileRouteTypes {
     | '/_authenticated/settings'
     | '/_authenticated/settlements'
     | '/_authenticated/students'
+    | '/_authenticated/admin/audit'
+    | '/_authenticated/admin/requests'
+    | '/_authenticated/admin/scopes'
+    | '/_authenticated/admin/users'
     | '/_authenticated/claims/new'
+    | '/_authenticated/admin/'
     | '/_authenticated/claims/'
     | '/_authenticated/claims/$id/edit'
     | '/_authenticated/claims/$id/'
@@ -264,6 +348,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DemoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/access': {
+      id: '/_authenticated/access'
+      path: '/access'
+      fullPath: '/access'
+      preLoaderRoute: typeof AuthenticatedAccessRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
@@ -313,6 +411,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedStudentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/audit': {
+      id: '/_authenticated/admin/audit'
+      path: '/audit'
+      fullPath: '/admin/audit'
+      preLoaderRoute: typeof AuthenticatedAdminAuditRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/requests': {
+      id: '/_authenticated/admin/requests'
+      path: '/requests'
+      fullPath: '/admin/requests'
+      preLoaderRoute: typeof AuthenticatedAdminRequestsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/scopes': {
+      id: '/_authenticated/admin/scopes'
+      path: '/scopes'
+      fullPath: '/admin/scopes'
+      preLoaderRoute: typeof AuthenticatedAdminScopesRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/users': {
+      id: '/_authenticated/admin/users'
+      path: '/users'
+      fullPath: '/admin/users'
+      preLoaderRoute: typeof AuthenticatedAdminUsersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/claims/': {
       id: '/_authenticated/claims/'
       path: '/claims'
@@ -344,7 +477,28 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
+  AuthenticatedAdminRequestsRoute: typeof AuthenticatedAdminRequestsRoute
+  AuthenticatedAdminScopesRoute: typeof AuthenticatedAdminScopesRoute
+  AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
+  AuthenticatedAdminRequestsRoute: AuthenticatedAdminRequestsRoute,
+  AuthenticatedAdminScopesRoute: AuthenticatedAdminScopesRoute,
+  AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
 interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAccessRoute: typeof AuthenticatedAccessRoute
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
   AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
   AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
@@ -359,6 +513,8 @@ interface AuthenticatedRouteRouteChildren {
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAccessRoute: AuthenticatedAccessRoute,
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
   AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
   AuthenticatedReportsRoute: AuthenticatedReportsRoute,

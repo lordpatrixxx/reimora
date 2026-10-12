@@ -5,6 +5,7 @@ import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Check, Plus, Sparkles, Trash2, AlertTriangle, ChevronLeft } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { useScopes } from "@/lib/admin";
 import { useMe } from "@/hooks/use-auth";
 import { useStudents } from "@/lib/queries";
 import { extractExpense } from "@/lib/evidence.functions";
@@ -103,18 +104,20 @@ function StepDetails({ claim, onSaved, isFinance }: { claim: Bundle["claim"] | n
   const [title, setTitle] = useState(claim?.title === "Untitled claim" ? "" : claim?.title ?? "");
   const [purpose, setPurpose] = useState(claim?.purpose ?? "");
   const [studentId, setStudentId] = useState<string | null>(claim?.student_id ?? (isFinance ? null : me?.student?.id ?? null));
+  const [scopeId, setScopeId] = useState<string>(claim?.scope_id ?? "");
   const [busy, setBusy] = useState(false);
+  const { data: scopes = [] } = useScopes();
 
   async function save() {
-    if (!title.trim() || !purpose.trim() || !studentId) return toast.error("Add a title, the actual purpose, and the student");
+    if (!title.trim() || !purpose.trim() || !studentId || !scopeId) return toast.error("Add a title, the purpose, the department/club/activity, and the student");
     setBusy(true);
     try {
       if (claim) {
-        const { error } = await supabase.from("claims").update({ title, purpose }).eq("id", claim.id);
+        const { error } = await supabase.from("claims").update({ title, purpose, scope_id: scopeId }).eq("id", claim.id);
         if (error) throw error;
         onSaved(claim.id);
       } else {
-        const { data, error } = await supabase.from("claims").insert({ title, purpose, student_id: studentId, created_by: me!.user.id }).select("id").single();
+        const { data, error } = await supabase.from("claims").insert({ title, purpose, scope_id: scopeId, student_id: studentId, created_by: me!.user.id }).select("id").single();
         if (error) throw error;
         onSaved(data.id);
       }
@@ -130,6 +133,12 @@ function StepDetails({ claim, onSaved, isFinance }: { claim: Bundle["claim"] | n
         <Field label="Student (reimbursement recipient)" hint={isFinance ? "Search by name or PRN." : "Your claims are always linked to your own record."}>
           {isFinance && !claim ? <StudentPicker value={studentId} onChange={setStudentId} /> :
             <input disabled className={inputCls} value={claim ? "Linked student (fixed after creation)" : `${me?.student?.full_name} · ${me?.student?.prn}`} />}
+        </Field>
+        <Field label="Department, club or activity" hint="Decides who reviews this claim. You can't pick a reviewer directly.">
+          <select className={inputCls} value={scopeId} onChange={(e) => setScopeId(e.target.value)}>
+            <option value="">Choose…</option>
+            {scopes.map((s) => <option key={s.id} value={s.id}>{s.name} ({s.kind})</option>)}
+          </select>
         </Field>
         <div className="md:col-span-2">
           <Field label="Actual purchase / activity purpose" hint="What was bought and why. Reviewers rely on this.">

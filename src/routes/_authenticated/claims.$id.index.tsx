@@ -20,7 +20,7 @@ function useDetail(id: string) {
     queryKey: ["claim-detail", id],
     queryFn: async () => {
       const [c, e, a, ev, fl, pay, al] = await Promise.all([
-        supabase.from("claims").select("*, students(*)").eq("id", id).single(),
+        supabase.from("claims").select("*, students(*), scopes:scope_id(name, kind)").eq("id", id).single(),
         supabase.from("expenses").select("*").eq("claim_id", id).order("created_at"),
         supabase.from("attachments").select("*").eq("claim_id", id).order("created_at"),
         supabase.from("claim_events").select("*").eq("claim_id", id).order("created_at"),
@@ -38,16 +38,22 @@ type D = NonNullable<ReturnType<typeof useDetail>["data"]>;
 function ClaimDetail() {
   const { id } = Route.useParams();
   const { data: me } = useMe();
-  const { data, refetch } = useDetail(id);
+  const { data, refetch, error } = useDetail(id);
+  const { data: canReview = false } = useQuery({
+    queryKey: ["can-review", id],
+    queryFn: async () => (await supabase.rpc("can_review_claim", { _claim: id })).data ?? false,
+  });
   const qc = useQueryClient();
   const reload = () => { refetch(); qc.invalidateQueries({ queryKey: ["claims"] }); };
-  if (!data || !me) return <div className="h-64 animate-pulse rounded-2xl bg-muted" />;
+  if (error) return <Card className="p-6 text-sm">This claim isn't available to you, or it couldn't be loaded. <Link to="/claims" className="font-semibold text-primary underline">Back to claims</Link></Card>;
+  if (!data || !me) return <div className="space-y-3"><div className="skeleton h-20" /><div className="skeleton h-64" /></div>;
   const { claim, expenses, attachments, events, flags, payments } = data;
   const paidTo = payments.filter((p) => p.direction === "to_student").reduce((s, p) => s + p.amount_paise, 0);
   const paidFrom = payments.filter((p) => p.direction === "from_student").reduce((s, p) => s + p.amount_paise, 0);
   const o = outstanding(claim.approved_paise ?? 0, claim.advance_applied_paise, paidTo, paidFrom);
   const canEdit = (claim.status === "draft" || claim.status === "changes_requested") && (me.isFinance || claim.student_id === me.student?.id || claim.created_by === me.user.id);
-  const isReviewer = me.isFaculty && (claim.status === "submitted" || claim.status === "under_review");
+  const isReviewer = canReview && (claim.status === "submitted" || claim.status === "under_review");
+  const awaitingReviewer = (claim.status === "submitted" || claim.status === "under_review") && !claim.assigned_faculty;
   const snap = claim.beneficiary_snapshot as { holder_name: string; bank_name: string; account_last4: string; is_fictional: boolean } | null;
 
   return (
@@ -56,7 +62,8 @@ function ClaimDetail() {
         <div>
           <Link to="/claims" className="mb-1 flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-primary print:hidden"><ChevronLeft className="h-3 w-3" /> Claims</Link>
           <h1 className="text-2xl font-bold tracking-tight text-primary">{claim.title}</h1>
-          <p className="text-sm text-muted-foreground">{claim.ref} · {claim.students?.full_name} ({claim.students?.prn})</p>
+          <p className="text-sm text-muted-foreground">{claim.ref} · {claim.students?.full_name} ({claim.students?.prn}) · {claim.scopes?.name ?? "No scope"}</p>
+          {awaitingReviewer && !canReview && <p className="mt-2 rounded-lg bg-muted px-3 py-1.5 text-xs text-muted-foreground">Waiting for an approver of {claim.scopes?.name ?? "this scope"} to pick it up. If none is assigned yet, the administrator has been notified.</p>}
           <div className="mt-2 flex gap-2"><StatusBadge status={claim.status} /><StatusBadge status={claim.settlement_status} /></div>
         </div>
         <div className="flex gap-2 print:hidden">
