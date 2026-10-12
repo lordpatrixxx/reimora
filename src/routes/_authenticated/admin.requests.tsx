@@ -1,6 +1,6 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { toast } from "sonner";
 import { X, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -132,7 +132,7 @@ function Drawer({ r, onClose }: { r: R; onClose: () => void }) {
             <dt className="text-muted-foreground">Requested role</dt><dd className="font-semibold">{isFaculty ? "Faculty / Club Approver" : "Student"}</dd>
             <dt className="text-muted-foreground">Requested scope</dt><dd>{r.scopes?.name ?? r.scope_text ?? "—"}</dd>
             {Object.entries(d).filter(([k, v]) => v && k !== "full_name").map(([k, v]) => (
-              <><dt key={k + "k"} className="capitalize text-muted-foreground">{k.replace("_", " ")}</dt><dd key={k}>{v}</dd></>
+              <Fragment key={k}><dt className="capitalize text-muted-foreground">{k.replace("_", " ")}</dt><dd>{v}</dd></Fragment>
             ))}
             <dt className="text-muted-foreground">Submitted</dt><dd>{new Date(r.created_at).toLocaleString("en-IN")}</dd>
             {r.decided_at && <><dt className="text-muted-foreground">Decided</dt><dd>{new Date(r.decided_at).toLocaleString("en-IN")} by {r.reviewer_name ?? "—"}</dd></>}

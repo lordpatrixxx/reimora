@@ -99,7 +99,7 @@ function AdminHome() {
                       <td className="tabular">{formatINR(c.claimed_paise)}</td>
                       <td><StatusBadge status={c.status} /></td>
                       <td className="pr-3">
-                        <AssignSelect claimId={c.id} value={c.assigned_faculty} approvers={approvers.filter((a) => a.id !== c.students?.id)} />
+                        <AssignSelect claimId={c.id} value={c.assigned_faculty} approvers={approvers} />
                         {isUn && <p className="mt-1 text-[11px] font-semibold text-warning">No approver for this scope</p>}
                         {!c.assigned_faculty && !isUn && <p className="mt-1 text-[11px] text-muted-foreground">Any scope approver</p>}
                         {c.assigned_faculty && <p className="mt-1 text-[11px] text-muted-foreground">{nameOf(c.assigned_faculty)}</p>}
