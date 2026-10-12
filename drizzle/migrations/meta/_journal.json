@@ -57,6 +57,13 @@
       "when": 1791829108346,
       "tag": "0007_fix_claim_returning_and_optional_reason",
       "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1791831854041,
+      "tag": "0008_migration",
+      "breakpoints": true
     }
   ]
 }
