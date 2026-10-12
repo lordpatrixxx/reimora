@@ -25,6 +25,7 @@ import { Route as AuthenticatedSettlementsRouteImport } from './routes/_authenti
 import { Route as AuthenticatedStudentsRouteImport } from './routes/_authenticated/students'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as AuthenticatedAdminAuditRouteImport } from './routes/_authenticated/admin.audit'
+import { Route as AuthenticatedAdminEmailRouteImport } from './routes/_authenticated/admin.email'
 import { Route as AuthenticatedAdminRequestsRouteImport } from './routes/_authenticated/admin.requests'
 import { Route as AuthenticatedAdminScopesRouteImport } from './routes/_authenticated/admin.scopes'
 import { Route as AuthenticatedAdminUsersRouteImport } from './routes/_authenticated/admin.users'
@@ -115,6 +116,11 @@ const AuthenticatedAdminAuditRoute = AuthenticatedAdminAuditRouteImport.update({
   path: '/audit',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminEmailRoute = AuthenticatedAdminEmailRouteImport.update({
+  id: '/email',
+  path: '/email',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
 const AuthenticatedAdminRequestsRoute =
   AuthenticatedAdminRequestsRouteImport.update({
     id: '/requests',
@@ -177,6 +183,7 @@ export interface FileRoutesByFullPath {
   '/settlements': typeof AuthenticatedSettlementsRoute
   '/students': typeof AuthenticatedStudentsRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/email': typeof AuthenticatedAdminEmailRoute
   '/admin/requests': typeof AuthenticatedAdminRequestsRoute
   '/admin/scopes': typeof AuthenticatedAdminScopesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -201,6 +208,7 @@ export interface FileRoutesByTo {
   '/settlements': typeof AuthenticatedSettlementsRoute
   '/students': typeof AuthenticatedStudentsRoute
   '/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/admin/email': typeof AuthenticatedAdminEmailRoute
   '/admin/requests': typeof AuthenticatedAdminRequestsRoute
   '/admin/scopes': typeof AuthenticatedAdminScopesRoute
   '/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -228,6 +236,7 @@ export interface FileRoutesById {
   '/_authenticated/settlements': typeof AuthenticatedSettlementsRoute
   '/_authenticated/students': typeof AuthenticatedStudentsRoute
   '/_authenticated/admin/audit': typeof AuthenticatedAdminAuditRoute
+  '/_authenticated/admin/email': typeof AuthenticatedAdminEmailRoute
   '/_authenticated/admin/requests': typeof AuthenticatedAdminRequestsRoute
   '/_authenticated/admin/scopes': typeof AuthenticatedAdminScopesRoute
   '/_authenticated/admin/users': typeof AuthenticatedAdminUsersRoute
@@ -255,6 +264,7 @@ export interface FileRouteTypes {
     | '/settlements'
     | '/students'
     | '/admin/audit'
+    | '/admin/email'
     | '/admin/requests'
     | '/admin/scopes'
     | '/admin/users'
@@ -279,6 +289,7 @@ export interface FileRouteTypes {
     | '/settlements'
     | '/students'
     | '/admin/audit'
+    | '/admin/email'
     | '/admin/requests'
     | '/admin/scopes'
     | '/admin/users'
@@ -305,6 +316,7 @@ export interface FileRouteTypes {
     | '/_authenticated/settlements'
     | '/_authenticated/students'
     | '/_authenticated/admin/audit'
+    | '/_authenticated/admin/email'
     | '/_authenticated/admin/requests'
     | '/_authenticated/admin/scopes'
     | '/_authenticated/admin/users'
@@ -439,6 +451,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminAuditRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/email': {
+      id: '/_authenticated/admin/email'
+      path: '/email'
+      fullPath: '/admin/email'
+      preLoaderRoute: typeof AuthenticatedAdminEmailRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/requests': {
       id: '/_authenticated/admin/requests'
       path: '/requests'
@@ -500,6 +519,7 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAuditRoute: typeof AuthenticatedAdminAuditRoute
+  AuthenticatedAdminEmailRoute: typeof AuthenticatedAdminEmailRoute
   AuthenticatedAdminRequestsRoute: typeof AuthenticatedAdminRequestsRoute
   AuthenticatedAdminScopesRoute: typeof AuthenticatedAdminScopesRoute
   AuthenticatedAdminUsersRoute: typeof AuthenticatedAdminUsersRoute
@@ -508,6 +528,7 @@ interface AuthenticatedAdminRouteChildren {
 
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAuditRoute: AuthenticatedAdminAuditRoute,
+  AuthenticatedAdminEmailRoute: AuthenticatedAdminEmailRoute,
   AuthenticatedAdminRequestsRoute: AuthenticatedAdminRequestsRoute,
   AuthenticatedAdminScopesRoute: AuthenticatedAdminScopesRoute,
   AuthenticatedAdminUsersRoute: AuthenticatedAdminUsersRoute,
