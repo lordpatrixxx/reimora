@@ -137,7 +137,7 @@ export function RequestAccessForm({ me, onDone }: { me: Me; onDone?: () => void 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    const keys: (keyof Details)[] = role === "student" ? ["full_name", "department", "club", "reason", "prn", "year", "division"] : ["full_name", "department", "club", "reason", "designation", "review_scope"];
+    const keys: (keyof Details)[] = role === "student" ? ["full_name", "department", "club", "prn", "year", "division"] : ["full_name", "department", "club", "designation", "review_scope"];
     const details = Object.fromEntries(keys.map((k) => [k, (f[k] ?? "").trim()]));
     const { error } = await supabase.rpc("submit_access_request", {
       _role: role, _scope: scopeId || (null as unknown as string), _scope_text: role === "faculty" && !scopeId ? f.review_scope ?? "" : f.club ?? "", _details: details,
@@ -199,7 +199,6 @@ export function RequestAccessForm({ me, onDone }: { me: Me; onDone?: () => void 
               <Field label="Scope of claims you need to review"><input required className={inputCls} placeholder="e.g. Robotics club event expenses" value={f.review_scope ?? ""} onChange={set("review_scope")} /></Field>
             </>
           )}
-          <div className="sm:col-span-2"><Field label="Reason for requesting access"><textarea required rows={3} className={inputCls} value={f.reason ?? ""} onChange={set("reason")} /></Field></div>
         </Card>
         <p className="text-xs text-muted-foreground">Bank details are never collected here. Finance adds payment details separately.</p>
         <button disabled={busy} className={btn.primary + " w-full sm:w-auto"}>{busy ? "Submitting…" : "Submit access request"}</button>
