@@ -116,7 +116,7 @@ function AdminHome() {
 
       <section>
         <h2 className="mb-1 font-semibold text-primary">Email delivery</h2>
-        <p className="mb-3 text-sm text-muted-foreground">No email sender is configured yet, so messages stay queued or fail. Nothing is marked sent without a successful delivery.</p>
+        <p className="mb-3 text-sm text-muted-foreground">Emails go out from the connected Gmail account. Anything that couldn't be delivered appears here with Retry — nothing is marked sent without a successful delivery.</p>
         {failed.length === 0 ? <Empty title="No undelivered emails" body="Delivery problems will appear here." /> : (
           <Card className="divide-y divide-border">
             {failed.map((n) => (
