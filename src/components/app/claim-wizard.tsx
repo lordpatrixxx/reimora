@@ -1,4 +1,5 @@
 import { useNavigate, Link } from "@tanstack/react-router";
+import { kickEmails } from "@/lib/kick-emails";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useMemo, useState } from "react";
@@ -451,7 +452,8 @@ function StepConfirm({ bundle, back, onSubmitted, goto }: { bundle: Bundle; back
     const { error } = await supabase.rpc("submit_claim", { _claim: claim.id });
     setBusy(false);
     if (error) return toast.error(errMsg(error));
-    toast.success(`${claim.ref} submitted for review`);
+    kickEmails();
+    toast.success(`${claim.ref} submitted successfully. Your confirmation email is queued.`);
     onSubmitted();
   }
   return (

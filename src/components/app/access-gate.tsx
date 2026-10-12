@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { kickEmails } from "@/lib/kick-emails";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { GraduationCap, ShieldCheck, Clock, XCircle, LogOut, Ban } from "lucide-react";
@@ -145,7 +146,8 @@ export function RequestAccessForm({ me, onDone }: { me: Me; onDone?: () => void 
     setBusy(false);
     if (error) return toast.error(errMsg(error));
     sessionStorage.removeItem(ROLE_PREF_KEY);
-    toast.success("Request submitted. The administrator has been notified.");
+    kickEmails();
+    toast.success("Request submitted. The administrator has been notified and your acknowledgement email is queued.");
     await qc.invalidateQueries({ queryKey: ["me"] });
     onDone?.();
   }

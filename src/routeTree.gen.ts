@@ -32,6 +32,7 @@ import { Route as AuthenticatedClaimsIndexRouteImport } from './routes/_authenti
 import { Route as AuthenticatedClaimsNewRouteImport } from './routes/_authenticated/claims.new'
 import { Route as AuthenticatedClaimsIdIndexRouteImport } from './routes/_authenticated/claims.$id.index'
 import { Route as AuthenticatedClaimsIdEditRouteImport } from './routes/_authenticated/claims.$id.edit'
+import { Route as ApiPublicJobsDeliverEmailsRouteImport } from './routes/api/public/jobs/deliver-emails'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -154,6 +155,12 @@ const AuthenticatedClaimsIdEditRoute =
     path: '/claims/$id/edit',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const ApiPublicJobsDeliverEmailsRoute =
+  ApiPublicJobsDeliverEmailsRouteImport.update({
+    id: '/api/public/jobs/deliver-emails',
+    path: '/api/public/jobs/deliver-emails',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -177,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AuthenticatedAdminIndexRoute
   '/claims/': typeof AuthenticatedClaimsIndexRoute
   '/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
+  '/api/public/jobs/deliver-emails': typeof ApiPublicJobsDeliverEmailsRoute
   '/claims/$id/': typeof AuthenticatedClaimsIdIndexRoute
 }
 export interface FileRoutesByTo {
@@ -200,6 +208,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminIndexRoute
   '/claims': typeof AuthenticatedClaimsIndexRoute
   '/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
+  '/api/public/jobs/deliver-emails': typeof ApiPublicJobsDeliverEmailsRoute
   '/claims/$id': typeof AuthenticatedClaimsIdIndexRoute
 }
 export interface FileRoutesById {
@@ -226,6 +235,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
   '/_authenticated/claims/': typeof AuthenticatedClaimsIndexRoute
   '/_authenticated/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
+  '/api/public/jobs/deliver-emails': typeof ApiPublicJobsDeliverEmailsRoute
   '/_authenticated/claims/$id/': typeof AuthenticatedClaimsIdIndexRoute
 }
 export interface FileRouteTypes {
@@ -252,6 +262,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/claims/'
     | '/claims/$id/edit'
+    | '/api/public/jobs/deliver-emails'
     | '/claims/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -275,6 +286,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/claims'
     | '/claims/$id/edit'
+    | '/api/public/jobs/deliver-emails'
     | '/claims/$id'
   id:
     | '__root__'
@@ -300,6 +312,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/'
     | '/_authenticated/claims/'
     | '/_authenticated/claims/$id/edit'
+    | '/api/public/jobs/deliver-emails'
     | '/_authenticated/claims/$id/'
   fileRoutesById: FileRoutesById
 }
@@ -309,6 +322,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
   DemoRoute: typeof DemoRoute
+  ApiPublicJobsDeliverEmailsRoute: typeof ApiPublicJobsDeliverEmailsRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -474,6 +488,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedClaimsIdEditRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/public/jobs/deliver-emails': {
+      id: '/api/public/jobs/deliver-emails'
+      path: '/api/public/jobs/deliver-emails'
+      fullPath: '/api/public/jobs/deliver-emails'
+      preLoaderRoute: typeof ApiPublicJobsDeliverEmailsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -537,6 +558,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
   DemoRoute: DemoRoute,
+  ApiPublicJobsDeliverEmailsRoute: ApiPublicJobsDeliverEmailsRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

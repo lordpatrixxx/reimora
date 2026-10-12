@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { kickEmails } from "@/lib/kick-emails";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -221,6 +222,7 @@ function ReviewPanel({ data, reload }: { data: D; reload: () => void }) {
     const { error } = await supabase.rpc("decide_claim", { _claim: claim.id, _decision: decision, _note: note, _items: items });
     setBusy(false);
     if (error) return toast.error(errMsg(error));
+    kickEmails();
     toast.success(decision === "approve" ? "Approved — finance will record settlement" : decision === "changes" ? "Changes requested" : "Rejected");
     reload();
   }
@@ -299,7 +301,8 @@ function SettlementActions({ data, remaining, kind, reload }: { data: D; remaini
     const { error } = await supabase.rpc("record_payment", { _claim: claim.id, _direction: kind === "returnable" ? "from_student" : "to_student", _amount: p, _paid_on: date, _reference: ref, _key: key });
     setBusy(false);
     if (error) return toast.error(errMsg(error));
-    toast.success("Payment recorded");
+    kickEmails();
+    toast.success("Payment recorded. The student's email is queued.");
     setAmt(""); setRef(""); setKey(crypto.randomUUID()); reload();
   }
 
