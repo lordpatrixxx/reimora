@@ -10,7 +10,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Card, Field, btn, errMsg, inputCls } from "./ui-bits";
 import { cn } from "@/lib/utils";
 
-export type Details = Partial<Record<"full_name" | "department" | "club" | "reason" | "prn" | "year" | "division" | "designation" | "review_scope", string>>;
+export type Details = Partial<Record<"full_name" | "department" | "club" | "reason" | "prn" | "year" | "division" | "designation" | "review_scope" | "branch_code", string>>;
 export const ROLE_PREF_KEY = "reimora-role-pref";
 
 async function signOut() {
@@ -126,19 +126,25 @@ export function RequestAccessForm({ me, onDone }: { me: Me; onDone?: () => void 
   const qc = useQueryClient();
   const pref = typeof window !== "undefined" ? sessionStorage.getItem(ROLE_PREF_KEY) : null;
   const [role, setRole] = useState<"student" | "faculty">(pref === "faculty" ? "faculty" : "student");
-  const [f, setF] = useState<Details>({ full_name: me.profile?.full_name ?? "", department: "Information Technology" });
+  const [f, setF] = useState<Details>({ full_name: me.profile?.full_name ?? "", department: "" });
   const [scopeId, setScopeId] = useState("");
   const [busy, setBusy] = useState(false);
   const { data: scopes = [] } = useQuery({
     queryKey: ["scopes"],
     queryFn: async () => (await supabase.from("scopes").select("*").eq("active", true).order("kind").order("name")).data ?? [],
   });
+  const { data: branches = [] } = useQuery({
+    queryKey: ["branches"],
+    queryFn: async () => (await supabase.from("branches").select("*").order("sort")).data ?? [],
+  });
   const set = (k: keyof Details) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setF({ ...f, [k]: e.target.value });
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
+    if (busy) return;
+    if (role === "student" && !f.branch_code) return toast.error("Choose your B.Tech branch");
     setBusy(true);
-    const keys: (keyof Details)[] = role === "student" ? ["full_name", "department", "club", "prn", "year", "division"] : ["full_name", "department", "club", "designation", "review_scope"];
+    const keys: (keyof Details)[] = role === "student" ? ["full_name", "department", "branch_code", "club", "prn", "year", "division"] : ["full_name", "department", "club", "designation", "review_scope"];
     const details = Object.fromEntries(keys.map((k) => [k, (f[k] ?? "").trim()]));
     const { error } = await supabase.rpc("submit_access_request", {
       _role: role, _scope: scopeId || (null as unknown as string), _scope_text: role === "faculty" && !scopeId ? f.review_scope ?? "" : f.club ?? "", _details: details,
@@ -179,7 +185,13 @@ export function RequestAccessForm({ me, onDone }: { me: Me; onDone?: () => void 
         <Card className="grid gap-4 p-5 sm:grid-cols-2">
           <Field label="Full name"><input required className={inputCls} value={f.full_name ?? ""} onChange={set("full_name")} /></Field>
           <Field label="Verified email" hint="From your sign-in; can't be changed here."><input disabled className={inputCls} value={me.user.email ?? ""} /></Field>
-          <Field label="Department"><input required className={inputCls} value={f.department ?? ""} onChange={set("department")} /></Field>
+          {role === "student" ? (
+            <Field label="B.Tech branch" hint="Pimpri Chinchwad College of Engineering programmes.">
+              <BranchPicker branches={branches} value={f.branch_code ?? ""} onChange={(code) => setF({ ...f, branch_code: code, department: branches.find((b) => b.code === code)?.name ?? "" })} />
+            </Field>
+          ) : (
+            <Field label="Department"><input required className={inputCls} value={f.department ?? ""} onChange={set("department")} /></Field>
+          )}
           <Field label="Club or organisation (optional)"><input className={inputCls} value={f.club ?? ""} onChange={set("club")} /></Field>
           {role === "student" ? (
             <>
@@ -205,6 +217,22 @@ export function RequestAccessForm({ me, onDone }: { me: Me; onDone?: () => void 
         <p className="text-xs text-muted-foreground">Bank details are never collected here. Finance adds payment details separately.</p>
         <button disabled={busy} className={btn.primary + " w-full sm:w-auto"}>{busy ? "Submitting…" : "Submit access request"}</button>
       </form>
+    </div>
+  );
+}
+
+/** Searchable branch dropdown (native datalist-free: filter box + select, works on mobile and keyboard). */
+function BranchPicker({ branches, value, onChange }: { branches: { code: string; name: string }[]; value: string; onChange: (code: string) => void }) {
+  const [q, setQ] = useState("");
+  const list = branches.filter((b) => b.name.toLowerCase().includes(q.toLowerCase()) || b.code.toLowerCase().includes(q.toLowerCase()));
+  return (
+    <div className="space-y-2">
+      <input type="search" aria-label="Search branches" placeholder="Search branch…" className={inputCls} value={q} onChange={(e) => setQ(e.target.value)} />
+      <select required aria-label="B.Tech branch" className={inputCls} value={value} onChange={(e) => onChange(e.target.value)}>
+        <option value="">Choose your branch…</option>
+        {list.map((b) => <option key={b.code} value={b.code}>{b.name}</option>)}
+        {value && !list.some((b) => b.code === value) && <option value={value}>{branches.find((b) => b.code === value)?.name}</option>}
+      </select>
     </div>
   );
 }

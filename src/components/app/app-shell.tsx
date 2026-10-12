@@ -1,10 +1,11 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { kickEmails } from "@/lib/kick-emails";
 import {
   LayoutDashboard, FilePlus2, Files, ClipboardCheck, Users, Wallet, BarChart3, Bell, Settings, Info, LogOut, Menu, X, Search,
-  ShieldCheck, UserCheck, Network, ScrollText,
+  ShieldCheck, UserCheck, Network, ScrollText, Mail,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useMe, roleLabel, type Me } from "@/hooks/use-auth";
@@ -22,6 +23,7 @@ const sections: Section[] = [
     { to: "/admin/requests", label: "Access requests", icon: UserCheck, badge: "requests" },
     { to: "/admin/users", label: "Users & roles", icon: Users },
     { to: "/admin/scopes", label: "Approver scopes", icon: Network },
+    { to: "/admin/email", label: "Email delivery", icon: Mail },
     { to: "/admin/audit", label: "Audit log", icon: ScrollText },
   ] },
   { title: "Reimbursement claims", show: () => true, items: [
@@ -45,6 +47,12 @@ const hideFor = (m: Me, to: string) => to === "/claims/new" && !(m.isFinance || 
 
 export function AppShell() {
   const { data: me, isLoading, error, refetch } = useMe();
+  // Once per browser session: send anything queued for this account (e.g. the welcome email after first sign-in).
+  useEffect(() => {
+    if (!me || sessionStorage.getItem("reimora-kick")) return;
+    sessionStorage.setItem("reimora-kick", "1");
+    kickEmails();
+  }, [me]);
   if (isLoading) return <BootScreen />;
   if (error) return <BootError error={error} retry={() => refetch()} />;
   if (!me) return <BootError error={{ message: "Session expired" }} retry={() => (window.location.href = "/auth")} />;
