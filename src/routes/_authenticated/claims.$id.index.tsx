@@ -99,7 +99,7 @@ function ClaimDetail() {
                 <>
                   <div className="flex justify-between border-t border-primary-foreground/20 pt-2 font-bold">
                     <span>{o.kind === "payable" ? "Payable to student" : o.kind === "returnable" ? "Returnable by student" : "Net"}</span>
-                    <span className="text-lime">{formatINR(o.amount)}</span>
+                    <span className="text-lime dark:text-primary-foreground dark:underline dark:decoration-2">{formatINR(o.amount)}</span>
                   </div>
                   <div className="flex justify-between opacity-80"><span>Recorded so far</span><span>{formatINR(o.kind === "returnable" ? paidFrom : paidTo)}</span></div>
                   <div className="flex justify-between font-semibold"><span>Outstanding</span><span>{formatINR(o.remaining)}</span></div>

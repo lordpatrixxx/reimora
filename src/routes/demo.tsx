@@ -120,7 +120,7 @@ function Demo() {
                   <div className="flex justify-between"><span>Advance applied</span><span>− {formatINR(s.advance * 100)}</span></div>
                   {net && <div className="mt-2 flex justify-between border-t border-primary-foreground/20 pt-2 font-bold">
                     <span>{net.kind === "payable" ? "Payable to student" : net.kind === "returnable" ? "Returnable by student" : "Net"}</span>
-                    <span className="text-lime">{formatINR(net.amount)}</span></div>}
+                    <span className="text-lime dark:text-primary-foreground dark:underline dark:decoration-2">{formatINR(net.amount)}</span></div>}
                   <div className="mt-2"><StatusBadge status={s.settlement} /></div>
                 </div>
               </div>

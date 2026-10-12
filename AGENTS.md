@@ -15,3 +15,4 @@
 - Evidence files live in the private `evidence` bucket at `{claim_id}/{expense_id}/file`; server fn `registerAttachment` validates content and is the only way attachment rows are created.
 - AI extraction stores the first result immutably in `expenses.extraction`; re-scans go to `extraction_rescan` and never overwrite confirmed data.
 - The public /demo page uses static fictional data only — keeps demo isolated from live records and email.
+- Theme: light/dark via `.dark` class on <html>, set pre-paint by inline script in __root and persisted in localStorage — avoids wrong-theme flash.
