@@ -5,9 +5,9 @@ import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "CampusSettle — College reimbursements, clearly managed" },
+      { title: "Reimora — College reimbursements, clearly managed" },
       { name: "description", content: "Scan receipts, route approvals and settle student advances with precise, auditable totals." },
-      { property: "og:title", content: "CampusSettle — College reimbursements, clearly managed" },
+      { property: "og:title", content: "Reimora — College reimbursements, clearly managed" },
       { property: "og:description", content: "AI-assisted receipt scanning, faculty review and advance settlement for college students." },
     ],
   }),
@@ -91,7 +91,7 @@ function HeroPreview() {
             <div className="flex justify-between"><span>Approved</span><span>{inr(2650)}</span></div>
             <div className="flex justify-between"><span>Advance applied</span><span>− {inr(2000)}</span></div>
             <div className="mt-1 flex justify-between border-t border-primary-foreground/20 pt-1 text-sm font-bold">
-              <span>Payable to student</span><span className="text-lime">{inr(650)}</span>
+              <span>Payable to student</span><span className="text-lime dark:text-primary-foreground dark:underline dark:decoration-2">{inr(650)}</span>
             </div>
           </div>
         </div>

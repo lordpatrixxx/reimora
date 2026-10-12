@@ -9,7 +9,7 @@ import { Card, Empty, PageHeader, StatusBadge, btn, inputCls } from "@/component
 
 export const Route = createFileRoute("/_authenticated/claims/")({
   validateSearch: z.object({ q: z.string().optional() }),
-  head: () => ({ meta: [{ title: "Claims — CampusSettle" }, { name: "description", content: "All reimbursement claims." }] }),
+  head: () => ({ meta: [{ title: "Claims — Reimora" }, { name: "description", content: "All reimbursement claims." }] }),
   component: ClaimsList,
 });
 

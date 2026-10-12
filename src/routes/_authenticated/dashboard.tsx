@@ -10,7 +10,7 @@ import { Card, Empty, PageHeader, StatusBadge, btn } from "@/components/app/ui-b
 import { StudentOnboarding } from "@/components/app/student-onboarding";
 
 export const Route = createFileRoute("/_authenticated/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — CampusSettle" }, { name: "description", content: "Your reimbursement overview." }] }),
+  head: () => ({ meta: [{ title: "Dashboard — Reimora" }, { name: "description", content: "Your reimbursement overview." }] }),
   component: Dashboard,
 });
 

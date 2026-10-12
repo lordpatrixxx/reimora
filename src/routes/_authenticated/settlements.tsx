@@ -11,7 +11,7 @@ import { Card, Empty, Field, PageHeader, StatusBadge, btn, errMsg, inputCls } fr
 import { StudentPicker } from "@/components/app/claim-wizard";
 
 export const Route = createFileRoute("/_authenticated/settlements")({
-  head: () => ({ meta: [{ title: "Advances & settlements — CampusSettle" }, { name: "description", content: "Advances, reimbursements and returns." }] }),
+  head: () => ({ meta: [{ title: "Advances & settlements — Reimora" }, { name: "description", content: "Advances, reimbursements and returns." }] }),
   component: Settlements,
 });
 

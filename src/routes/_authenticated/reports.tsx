@@ -6,7 +6,7 @@ import { formatINR, outstanding } from "@/lib/money";
 import { CATEGORIES, Card, PageHeader, StatusBadge, btn, inputCls } from "@/components/app/ui-bits";
 
 export const Route = createFileRoute("/_authenticated/reports")({
-  head: () => ({ meta: [{ title: "Reports — CampusSettle" }, { name: "description", content: "Claimed vs approved, outstanding settlements, categories." }] }),
+  head: () => ({ meta: [{ title: "Reports — Reimora" }, { name: "description", content: "Claimed vs approved, outstanding settlements, categories." }] }),
   component: Reports,
 });
 

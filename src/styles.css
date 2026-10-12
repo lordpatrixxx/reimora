@@ -2,7 +2,7 @@
 @source "../src";
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
+@custom-variant dark (&:where(.dark, .dark *));
 
 @theme inline {
   --font-display: "Instrument Serif", Georgia, serif;
@@ -72,6 +72,41 @@
   --shadow-soft-v: 0 1px 2px oklch(0.3 0.03 160 / 0.05), 0 4px 16px -6px oklch(0.3 0.03 160 / 0.1);
   --shadow-float-v: 0 2px 4px oklch(0.3 0.03 160 / 0.05), 0 24px 60px -20px oklch(0.3 0.05 160 / 0.28);
 }
+
+.dark {
+  --background: oklch(0.19 0.012 165);
+  --foreground: oklch(0.94 0.008 115);
+  --card: oklch(0.23 0.014 165);
+  --card-foreground: oklch(0.94 0.008 115);
+  --popover: oklch(0.25 0.015 165);
+  --popover-foreground: oklch(0.94 0.008 115);
+  --primary: oklch(0.84 0.13 125);
+  --primary-foreground: oklch(0.2 0.03 165);
+  --secondary: oklch(0.27 0.016 165);
+  --secondary-foreground: oklch(0.92 0.01 115);
+  --muted: oklch(0.26 0.014 165);
+  --muted-foreground: oklch(0.72 0.015 140);
+  --accent: oklch(0.3 0.03 155);
+  --accent-foreground: oklch(0.92 0.04 120);
+  --lime: oklch(0.86 0.15 120);
+  --lime-foreground: oklch(0.22 0.04 165);
+  --warning: oklch(0.8 0.12 80);
+  --warning-soft: oklch(0.3 0.05 75);
+  --success-soft: oklch(0.3 0.05 150);
+  --destructive: oklch(0.7 0.16 25);
+  --destructive-soft: oklch(0.3 0.06 25);
+  --destructive-foreground: oklch(0.98 0 0);
+  --border: oklch(0.32 0.015 165);
+  --input: oklch(0.36 0.016 165);
+  --ring: oklch(0.84 0.13 125);
+  --shadow-soft-v: 0 1px 2px oklch(0 0 0 / 0.3), 0 4px 16px -6px oklch(0 0 0 / 0.4);
+  --shadow-float-v: 0 2px 4px oklch(0 0 0 / 0.3), 0 24px 60px -20px oklch(0 0 0 / 0.6);
+}
+
+.theme-transition, .theme-transition *, .theme-transition *::before, .theme-transition *::after {
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, fill 0.3s ease, stroke 0.3s ease !important;
+}
+img, video, .preserve-colors { color-scheme: normal; filter: none; }
 
 @layer base {
   * { border-color: var(--color-border); }

@@ -8,7 +8,7 @@ import { processNotifications } from "@/lib/evidence.functions";
 import { Card, Empty, PageHeader, StatusBadge, btn, errMsg } from "@/components/app/ui-bits";
 
 export const Route = createFileRoute("/_authenticated/notifications")({
-  head: () => ({ meta: [{ title: "Notifications — CampusSettle" }, { name: "description", content: "Claim updates and email delivery status." }] }),
+  head: () => ({ meta: [{ title: "Notifications — Reimora" }, { name: "description", content: "Claim updates and email delivery status." }] }),
   component: Notifications,
 });
 

@@ -1,12 +1,13 @@
 import { Link } from "@tanstack/react-router";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export function Logo() {
   return (
-    <Link to="/" className="flex items-center gap-2">
+    <Link to="/" className="flex items-center gap-2" aria-label="Reimora home">
       <span className="grid h-8 w-8 place-items-center rounded-lg bg-primary">
         <span className="h-3 w-3 rounded-sm bg-lime" />
       </span>
-      <span className="text-[17px] font-bold tracking-tight text-primary">CampusSettle</span>
+      <span className="text-[17px] font-bold tracking-tight text-primary">Reimora</span>
     </Link>
   );
 }
@@ -22,7 +23,8 @@ export function SiteHeader() {
           <Link to="/demo" className="hover:text-foreground">Demo</Link>
           <Link to="/about" className="hover:text-foreground">About</Link>
         </nav>
-        <Link to="/auth" className="rounded-full border border-primary/20 px-4 py-2 text-sm font-semibold text-primary disabled:opacity-70">Sign in</Link>
+        <div className="flex items-center gap-2"><ThemeToggle />
+        <Link to="/auth" className="rounded-full border border-primary/20 px-4 py-2 text-sm font-semibold text-primary disabled:opacity-70">Sign in</Link></div>
       </div>
     </header>
   );
