@@ -245,6 +245,59 @@ export const extractExpense = createServerFn({ method: "POST" })
     return { applied: false, extraction };
   });
 
+/** Branded HTML email wrapper for Reimora notifications. */
+function emailHtml(subject: string, body: string): string {
+  const esc = (s: string) => s.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const paras = body.split(/\n{2,}|\n/).filter(Boolean).map((p) => `<p style="margin:0 0 12px;font-size:14px;line-height:1.6;color:#2b3a34">${esc(p)}</p>`).join("");
+  return `<!doctype html><html><body style="margin:0;padding:0;background:#F7F8F4;font-family:Georgia,serif">
+  <div style="max-width:560px;margin:0 auto;padding:32px 16px">
+    <div style="background:#143D32;border-radius:16px 16px 0 0;padding:20px 24px">
+      <span style="display:inline-block;background:#D8F36A;color:#143D32;font-weight:700;border-radius:8px;padding:4px 10px;font-size:16px;font-family:Arial,sans-serif">R</span>
+      <span style="color:#F7F8F4;font-size:18px;font-weight:700;margin-left:8px;font-family:Arial,sans-serif">Reimora</span>
+    </div>
+    <div style="background:#ffffff;border:1px solid #e3e6de;border-top:0;border-radius:0 0 16px 16px;padding:24px">
+      <h1 style="margin:0 0 16px;font-size:18px;color:#143D32;font-family:Arial,sans-serif">${esc(subject)}</h1>
+      ${paras}
+      <p style="margin:24px 0 0;font-size:12px;color:#8a938c;border-top:1px solid #eef0ea;padding-top:12px">
+        Reimora · Student reimbursement &amp; advance settlement · You received this because of activity on your Reimora account.
+      </p>
+    </div>
+  </div></body></html>`;
+}
+
+const b64url = (s: string) =>
+  btoa(Array.from(new TextEncoder().encode(s), (b) => String.fromCharCode(b)).join(""))
+    .replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+const mimeHeader = (v: string) => (/^[\x00-\x7F]*$/.test(v) ? v : `=?UTF-8?B?${b64url(v)}?=`);
+
+/** Send one email through the connected Gmail account via the connector gateway. */
+async function sendGmail(to: string, subject: string, html: string) {
+  const lovableKey = process.env.LOVABLE_API_KEY;
+  const gmailKey = process.env.GOOGLE_MAIL_API_KEY;
+  if (!lovableKey || !gmailKey) throw new Error("Gmail connection is not linked to this project");
+  const raw = [
+    `To: ${to}`,
+    `Subject: ${mimeHeader(subject)}`,
+    "MIME-Version: 1.0",
+    'Content-Type: text/html; charset="UTF-8"',
+    "",
+    html,
+  ].join("\r\n");
+  const res = await fetch("https://connector-gateway.lovable.dev/google_mail/gmail/v1/users/me/messages/send", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${lovableKey}`,
+      "X-Connection-Api-Key": gmailKey,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ raw: b64url(raw) }),
+  });
+  if (!res.ok) {
+    const t = await res.text().catch(() => "");
+    throw new Error(`Gmail send failed (${res.status}): ${t.slice(0, 200)}`);
+  }
+}
+
 /** Finance: attempt delivery of queued notifications. Honest about provider status. */
 export const processNotifications = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -253,15 +306,28 @@ export const processNotifications = createServerFn({ method: "POST" })
     if (!isFin) throw new Error("Forbidden");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows } = await supabaseAdmin.from("notifications").select("*").in("status", ["queued", "failed"]).lt("attempts", 5).limit(50);
-    const configured = false; // No email sender domain is set up for this project yet.
-    let failed = 0;
+    const configured = Boolean(process.env.LOVABLE_API_KEY && process.env.GOOGLE_MAIL_API_KEY);
+    let sent = 0, failed = 0;
     for (const n of rows ?? []) {
       if (!configured) {
         await supabaseAdmin.from("notifications").update({
-          status: "failed", attempts: n.attempts + 1, last_error: "Email sender is not configured for this project",
+          status: "failed", attempts: n.attempts + 1, last_error: "Gmail connection is not linked to this project",
+        }).eq("id", n.id).eq("attempts", n.attempts);
+        failed++;
+        continue;
+      }
+      try {
+        await sendGmail(n.recipient_email, n.subject, emailHtml(n.subject, n.body));
+        await supabaseAdmin.from("notifications").update({
+          status: "sent", attempts: n.attempts + 1, last_error: null, sent_at: new Date().toISOString(),
+        }).eq("id", n.id).eq("attempts", n.attempts);
+        sent++;
+      } catch (e) {
+        await supabaseAdmin.from("notifications").update({
+          status: "failed", attempts: n.attempts + 1, last_error: e instanceof Error ? e.message.slice(0, 300) : "Send failed",
         }).eq("id", n.id).eq("attempts", n.attempts);
         failed++;
       }
     }
-    return { processed: rows?.length ?? 0, sent: 0, failed, configured };
+    return { processed: rows?.length ?? 0, sent, failed, configured };
   });
