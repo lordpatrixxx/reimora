@@ -1,12 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { UserCheck, AlertTriangle, MailWarning, Files } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useClaims } from "@/lib/queries";
 import { usePeople } from "@/lib/admin";
 import { formatINR } from "@/lib/money";
+import { processNotifications } from "@/lib/evidence.functions";
 import type { Details } from "@/components/app/access-gate";
 import { Card, Empty, PageHeader, StatusBadge, btn, errMsg } from "@/components/app/ui-bits";
 
@@ -43,6 +45,18 @@ function AdminHome() {
     toast.success("Re-queued for delivery");
     qc.invalidateQueries({ queryKey: ["admin-failed-mail"] });
   }
+
+  // Automatically attempt delivery of queued emails when the admin opens this page.
+  const process = useServerFn(processNotifications);
+  const ran = useRef(false);
+  useEffect(() => {
+    if (ran.current) return;
+    ran.current = true;
+    process().then((r) => {
+      if (r.sent > 0) toast.success(`${r.sent} email${r.sent === 1 ? "" : "s"} sent`);
+      if (r.sent > 0 || r.failed > 0) qc.invalidateQueries({ queryKey: ["admin-failed-mail"] });
+    }).catch(() => {});
+  }, [process, qc]);
 
   const stats = [
     { label: "Pending access requests", value: pending.length, icon: UserCheck, to: "/admin/requests" },
@@ -116,7 +130,7 @@ function AdminHome() {
 
       <section>
         <h2 className="mb-1 font-semibold text-primary">Email delivery</h2>
-        <p className="mb-3 text-sm text-muted-foreground">No email sender is configured yet, so messages stay queued or fail. Nothing is marked sent without a successful delivery.</p>
+        <p className="mb-3 text-sm text-muted-foreground">Emails go out from the connected Gmail account. Anything that couldn't be delivered appears here with Retry — nothing is marked sent without a successful delivery.</p>
         {failed.length === 0 ? <Empty title="No undelivered emails" body="Delivery problems will appear here." /> : (
           <Card className="divide-y divide-border">
             {failed.map((n) => (

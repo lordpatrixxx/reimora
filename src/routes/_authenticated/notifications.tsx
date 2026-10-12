@@ -40,8 +40,8 @@ function Notifications() {
   return (
     <div>
       <PageHeader title="Notifications" sub="In-app copies of every email. Access updates and claim updates are labelled separately." action={mine.some((n) => !n.read_at) && <button onClick={markRead} className={btn.ghost}>Mark all read</button>} />
-      <div className="mb-4 rounded-xl border border-warning/30 bg-warning-soft p-4 text-sm">
-        <b>Email delivery is not set up yet.</b> Notifications are queued and shown here, but no email is sent until a sender domain is configured. Status never shows "sent" unless delivery succeeds.
+      <div className="mb-4 rounded-xl border border-border bg-muted/40 p-4 text-sm">
+        Emails are sent from the connected Gmail account. Every notification also appears here in-app. Status shows "sent" only after Gmail confirms delivery.
       </div>
       <div className="mb-4 flex rounded-full border border-border bg-card p-1 w-fit" role="tablist">
         {(["all", "access", "claim"] as const).map((c) => (
