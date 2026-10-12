@@ -274,7 +274,7 @@ function ReviewExpense({ bundle, expense: e, refetch }: { bundle: Bundle; expens
     const { error } = await supabase.from("expenses").update({
       vendor: f.vendor || null, amount_paise: amount, expense_date: f.date || null, invoice_no: f.invoice || null,
       txn_ref: f.txn || null, category: (f.category || null) as never, description: f.description,
-      confirmed_at: confirm ? new Date().toISOString() : null, confirmed_by: confirm ? u.user?.id : null,
+      confirmed_at: confirm ? new Date().toISOString() : null, confirmed_by: confirm ? (u.user?.id ?? null) : null,
     }).eq("id", e.id);
     if (error) return toast.error(errMsg(error));
     toast.success(confirm ? "Details confirmed" : "Saved");

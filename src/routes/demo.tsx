@@ -59,8 +59,8 @@ const S: Scenario[] = [
 ];
 
 function Demo() {
-  const [sel, setSel] = useState(S[0].id);
-  const s = S.find((x) => x.id === sel)!;
+  const [sel, setSel] = useState("a");
+  const s = S.find((x) => x.id === sel) ?? S[0]!;
   const net = s.approved != null ? netSettlement(s.approved * 100, s.advance * 100) : null;
   return (
     <div className="min-h-screen">
