@@ -97,6 +97,7 @@ const resultSchema = z.object({
   missing_or_ambiguous: z.array(z.string()),
 });
 
+const VALID_CATEGORIES: string[] = ["Stationery", "Refreshment", "Rent", "Design Material", "Printing", "Travel", "Equipment", "Other"];
 const nullable = (t: string) => ({ type: [t, "null"] });
 const jsonSchema = {
   type: "object",
@@ -234,7 +235,7 @@ export const extractExpense = createServerFn({ method: "POST" })
         expense_date: exp.expense_date ?? validDate,
         invoice_no: exp.invoice_no ?? facts.invoice_number,
         txn_ref: exp.txn_ref ?? facts.transaction_reference,
-        category: exp.category ?? parsed.suggestion.category,
+        category: exp.category ?? (parsed.suggestion.category && VALID_CATEGORIES.includes(parsed.suggestion.category) ? parsed.suggestion.category : null),
         description: exp.description || facts.items_or_note || "",
       }).eq("id", exp.id);
       if (error) throw new Error(error.message);
