@@ -1,0 +1,1 @@
+do $$ begin execute replace(pg_get_functiondef('public.submit_claim'::regproc), 'ad.ref ||', 'coalesce(ad.reference, ad.purpose, ''Advance'') ||'); end $$;
