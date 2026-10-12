@@ -1,12 +1,14 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { UserCheck, AlertTriangle, MailWarning, Files } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useClaims } from "@/lib/queries";
 import { usePeople } from "@/lib/admin";
 import { formatINR } from "@/lib/money";
+import { processNotifications } from "@/lib/evidence.functions";
 import type { Details } from "@/components/app/access-gate";
 import { Card, Empty, PageHeader, StatusBadge, btn, errMsg } from "@/components/app/ui-bits";
 
