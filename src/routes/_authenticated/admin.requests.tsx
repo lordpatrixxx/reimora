@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { X, Search } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useScopes } from "@/lib/admin";
+import type { Details } from "@/components/app/access-gate";
 import { Card, Empty, Field, PageHeader, btn, errMsg, inputCls } from "@/components/app/ui-bits";
 import { cn } from "@/lib/utils";
 
@@ -12,10 +13,12 @@ const TABS = ["PENDING", "APPROVED", "REJECTED", "WITHDRAWN"] as const;
 type Tab = (typeof TABS)[number];
 
 export const Route = createFileRoute("/_authenticated/admin/requests")({
-  validateSearch: (s: Record<string, unknown>) => ({
-    id: typeof s.id === "string" ? s.id : undefined,
-    tab: (TABS as readonly string[]).includes(String(s.tab)) ? (s.tab as Tab) : undefined,
-  }),
+  validateSearch: (s: Record<string, unknown>): { id?: string; tab?: Tab } => {
+    const out: { id?: string; tab?: Tab } = {};
+    if (typeof s["id"] === "string") out.id = s["id"];
+    if ((TABS as readonly string[]).includes(String(s["tab"]))) out.tab = s["tab"] as Tab;
+    return out;
+  },
   head: () => ({ meta: [{ title: "Access requests — Reimora" }, { name: "description", content: "Approve or reject requests for Reimora access." }] }),
   component: Requests,
 });
@@ -71,7 +74,7 @@ function Requests() {
               <thead className="text-left text-xs text-muted-foreground"><tr><th className="p-3">Applicant</th><th>Requested role</th><th>Department / club</th><th className="pr-3">Submitted</th></tr></thead>
               <tbody>
                 {list.map((r) => {
-                  const d = r.details as Record<string, string>;
+                  const d = r.details as Details;
                   return (
                     <tr key={r.id} onClick={() => nav({ search: { tab, id: r.id } })} className="cursor-pointer border-t border-border hover:bg-muted/50">
                       <td className="p-3"><p className="font-semibold">{d.full_name}</p><p className="text-xs text-muted-foreground">{r.ref}</p></td>
@@ -97,7 +100,7 @@ function Drawer({ r, onClose }: { r: R; onClose: () => void }) {
     queryKey: ["profile-email", r.user_id],
     queryFn: async () => (await supabase.from("profiles").select("email").eq("id", r.user_id).maybeSingle()).data?.email ?? "",
   });
-  const d = r.details as Record<string, string>;
+  const d = r.details as Details;
   const [scope, setScope] = useState(r.scope_id ?? "");
   const [reason, setReason] = useState("");
   const [mode, setMode] = useState<"idle" | "approve" | "reject">("idle");

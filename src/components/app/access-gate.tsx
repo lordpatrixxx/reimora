@@ -9,6 +9,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { Card, Field, btn, errMsg, inputCls } from "./ui-bits";
 import { cn } from "@/lib/utils";
 
+export type Details = Partial<Record<"full_name" | "department" | "club" | "reason" | "prn" | "year" | "division" | "designation" | "review_scope", string>>;
 export const ROLE_PREF_KEY = "reimora-role-pref";
 
 async function signOut() {
@@ -75,7 +76,7 @@ export function PendingCard({ req, onNew }: { req: Req; onNew?: () => void }) {
   const qc = useQueryClient();
   const [busy, setBusy] = useState(false);
   const [open, setOpen] = useState(false);
-  const d = req.details as Record<string, string>;
+  const d = req.details as Details;
   async function withdraw() {
     if (!confirm("Withdraw this access request?")) return;
     setBusy(true);
@@ -124,19 +125,19 @@ export function RequestAccessForm({ me, onDone }: { me: Me; onDone?: () => void 
   const qc = useQueryClient();
   const pref = typeof window !== "undefined" ? sessionStorage.getItem(ROLE_PREF_KEY) : null;
   const [role, setRole] = useState<"student" | "faculty">(pref === "faculty" ? "faculty" : "student");
-  const [f, setF] = useState<Record<string, string>>({ full_name: me.profile?.full_name ?? "", department: "Information Technology" });
+  const [f, setF] = useState<Details>({ full_name: me.profile?.full_name ?? "", department: "Information Technology" });
   const [scopeId, setScopeId] = useState("");
   const [busy, setBusy] = useState(false);
   const { data: scopes = [] } = useQuery({
     queryKey: ["scopes"],
     queryFn: async () => (await supabase.from("scopes").select("*").eq("active", true).order("kind").order("name")).data ?? [],
   });
-  const set = (k: string) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setF({ ...f, [k]: e.target.value });
+  const set = (k: keyof Details) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => setF({ ...f, [k]: e.target.value });
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     setBusy(true);
-    const keys = role === "student" ? ["full_name", "department", "club", "reason", "prn", "year", "division"] : ["full_name", "department", "club", "reason", "designation", "review_scope"];
+    const keys: (keyof Details)[] = role === "student" ? ["full_name", "department", "club", "reason", "prn", "year", "division"] : ["full_name", "department", "club", "reason", "designation", "review_scope"];
     const details = Object.fromEntries(keys.map((k) => [k, (f[k] ?? "").trim()]));
     const { error } = await supabase.rpc("submit_access_request", {
       _role: role, _scope: scopeId || (null as unknown as string), _scope_text: role === "faculty" && !scopeId ? f.review_scope ?? "" : f.club ?? "", _details: details,

@@ -7,6 +7,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useClaims } from "@/lib/queries";
 import { usePeople } from "@/lib/admin";
 import { formatINR } from "@/lib/money";
+import type { Details } from "@/components/app/access-gate";
 import { Card, Empty, PageHeader, StatusBadge, btn, errMsg } from "@/components/app/ui-bits";
 
 export const Route = createFileRoute("/_authenticated/admin/")({
@@ -70,7 +71,7 @@ function AdminHome() {
         {pending.length === 0 ? <Empty title="No pending access requests" body="New requests appear here and in your notifications." /> : (
           <Card className="divide-y divide-border">
             {pending.slice(0, 5).map((r) => {
-              const d = r.details as Record<string, string>;
+              const d = r.details as Details;
               return (
                 <Link key={r.id} to="/admin/requests" search={{ id: r.id, tab: "PENDING" }} className="flex items-center justify-between gap-3 p-4 hover:bg-muted/50">
                   <div className="min-w-0"><p className="font-semibold">{d.full_name}</p><p className="truncate text-xs text-muted-foreground">{r.requested_role === "student" ? "Student" : "Faculty / Club Approver"} · {d.department} · {new Date(r.created_at).toLocaleDateString("en-IN")}</p></div>

@@ -53,7 +53,7 @@ function Notifications() {
       </div>
       {mine.length === 0 && !me?.isFinance ? <Empty title="No notifications" body="You'll see updates here when your claims change status." /> : (
         <Card className="divide-y divide-border">
-          {mine.map((n) => <Row key={n.id} n={n} showAdmin={me?.isSuperAdmin} />)}
+          {mine.map((n) => <Row key={n.id} n={n} showAdmin={!!me?.isSuperAdmin} />)}
         </Card>
       )}
       {me?.isFinance && (
