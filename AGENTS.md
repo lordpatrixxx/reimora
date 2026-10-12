@@ -20,3 +20,5 @@
 - `has_role` returns false for suspended users and true for super_admin — so suspension instantly blocks every policy/RPC and the admin passes all role checks; self-review is blocked separately by `is_own_claim`.
 - Claims route by `claims.scope_id` → `approver_scopes`; approvers see only their scope or claims assigned to them — students never pick a reviewer.
 - Users without roles see the AccessGate in AppShell instead of any route — avoids flashes of privileged UI.
+- Emails: DB functions queue rows in `notifications` (outbox, unique dedupe_key); `src/lib/email-outbox.server.ts` claims rows atomically and sends via the Gmail connector. It runs right after each action (`kickEmails`) and from a 10-minute scheduled job — so emails never depend on an admin clicking "send".
+- Student branches come from the `branches` reference table (stable codes); `students.branch_code` syncs `department` via trigger.
