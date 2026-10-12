@@ -13,9 +13,17 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as DemoRouteImport } from './routes/demo'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
+import { Route as AuthenticatedNotificationsRouteImport } from './routes/_authenticated/notifications'
+import { Route as AuthenticatedReportsRouteImport } from './routes/_authenticated/reports'
+import { Route as AuthenticatedReviewRouteImport } from './routes/_authenticated/review'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedSettlementsRouteImport } from './routes/_authenticated/settlements'
+import { Route as AuthenticatedStudentsRouteImport } from './routes/_authenticated/students'
 import { Route as AuthenticatedClaimsIndexRouteImport } from './routes/_authenticated/claims.index'
 import { Route as AuthenticatedClaimsNewRouteImport } from './routes/_authenticated/claims.new'
+import { Route as AuthenticatedClaimsIdIndexRouteImport } from './routes/_authenticated/claims.$id.index'
 import { Route as AuthenticatedClaimsIdEditRouteImport } from './routes/_authenticated/claims.$id.edit'
 
 const IndexRoute = IndexRouteImport.update({
@@ -37,9 +45,46 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DemoRoute = DemoRouteImport.update({
+  id: '/demo',
+  path: '/demo',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedNotificationsRoute =
+  AuthenticatedNotificationsRouteImport.update({
+    id: '/notifications',
+    path: '/notifications',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedReportsRoute = AuthenticatedReportsRouteImport.update({
+  id: '/reports',
+  path: '/reports',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedReviewRoute = AuthenticatedReviewRouteImport.update({
+  id: '/review',
+  path: '/review',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedSettlementsRoute =
+  AuthenticatedSettlementsRouteImport.update({
+    id: '/settlements',
+    path: '/settlements',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedStudentsRoute = AuthenticatedStudentsRouteImport.update({
+  id: '/students',
+  path: '/students',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedClaimsIndexRoute =
@@ -53,6 +98,12 @@ const AuthenticatedClaimsNewRoute = AuthenticatedClaimsNewRouteImport.update({
   path: '/claims/new',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedClaimsIdIndexRoute =
+  AuthenticatedClaimsIdIndexRouteImport.update({
+    id: '/claims/$id/',
+    path: '/claims/$id/',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedClaimsIdEditRoute =
   AuthenticatedClaimsIdEditRouteImport.update({
     id: '/claims/$id/edit',
@@ -64,19 +115,35 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/demo': typeof DemoRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/reports': typeof AuthenticatedReportsRoute
+  '/review': typeof AuthenticatedReviewRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/settlements': typeof AuthenticatedSettlementsRoute
+  '/students': typeof AuthenticatedStudentsRoute
   '/claims/new': typeof AuthenticatedClaimsNewRoute
   '/claims/': typeof AuthenticatedClaimsIndexRoute
   '/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
+  '/claims/$id/': typeof AuthenticatedClaimsIdIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/demo': typeof DemoRoute
   '/dashboard': typeof AuthenticatedDashboardRoute
+  '/notifications': typeof AuthenticatedNotificationsRoute
+  '/reports': typeof AuthenticatedReportsRoute
+  '/review': typeof AuthenticatedReviewRoute
+  '/settings': typeof AuthenticatedSettingsRoute
+  '/settlements': typeof AuthenticatedSettlementsRoute
+  '/students': typeof AuthenticatedStudentsRoute
   '/claims/new': typeof AuthenticatedClaimsNewRoute
   '/claims': typeof AuthenticatedClaimsIndexRoute
   '/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
+  '/claims/$id': typeof AuthenticatedClaimsIdIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -84,10 +151,18 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/about': typeof AboutRoute
   '/auth': typeof AuthRoute
+  '/demo': typeof DemoRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRoute
+  '/_authenticated/notifications': typeof AuthenticatedNotificationsRoute
+  '/_authenticated/reports': typeof AuthenticatedReportsRoute
+  '/_authenticated/review': typeof AuthenticatedReviewRoute
+  '/_authenticated/settings': typeof AuthenticatedSettingsRoute
+  '/_authenticated/settlements': typeof AuthenticatedSettlementsRoute
+  '/_authenticated/students': typeof AuthenticatedStudentsRoute
   '/_authenticated/claims/new': typeof AuthenticatedClaimsNewRoute
   '/_authenticated/claims/': typeof AuthenticatedClaimsIndexRoute
   '/_authenticated/claims/$id/edit': typeof AuthenticatedClaimsIdEditRoute
+  '/_authenticated/claims/$id/': typeof AuthenticatedClaimsIdIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -95,29 +170,53 @@ export interface FileRouteTypes {
     | '/'
     | '/about'
     | '/auth'
+    | '/demo'
     | '/dashboard'
+    | '/notifications'
+    | '/reports'
+    | '/review'
+    | '/settings'
+    | '/settlements'
+    | '/students'
     | '/claims/new'
     | '/claims/'
     | '/claims/$id/edit'
+    | '/claims/$id/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/about'
     | '/auth'
+    | '/demo'
     | '/dashboard'
+    | '/notifications'
+    | '/reports'
+    | '/review'
+    | '/settings'
+    | '/settlements'
+    | '/students'
     | '/claims/new'
     | '/claims'
     | '/claims/$id/edit'
+    | '/claims/$id'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/about'
     | '/auth'
+    | '/demo'
     | '/_authenticated/dashboard'
+    | '/_authenticated/notifications'
+    | '/_authenticated/reports'
+    | '/_authenticated/review'
+    | '/_authenticated/settings'
+    | '/_authenticated/settlements'
+    | '/_authenticated/students'
     | '/_authenticated/claims/new'
     | '/_authenticated/claims/'
     | '/_authenticated/claims/$id/edit'
+    | '/_authenticated/claims/$id/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -125,6 +224,7 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AboutRoute: typeof AboutRoute
   AuthRoute: typeof AuthRoute
+  DemoRoute: typeof DemoRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -157,11 +257,60 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/demo': {
+      id: '/demo'
+      path: '/demo'
+      fullPath: '/demo'
+      preLoaderRoute: typeof DemoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/dashboard': {
       id: '/_authenticated/dashboard'
       path: '/dashboard'
       fullPath: '/dashboard'
       preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/notifications': {
+      id: '/_authenticated/notifications'
+      path: '/notifications'
+      fullPath: '/notifications'
+      preLoaderRoute: typeof AuthenticatedNotificationsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/reports': {
+      id: '/_authenticated/reports'
+      path: '/reports'
+      fullPath: '/reports'
+      preLoaderRoute: typeof AuthenticatedReportsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/review': {
+      id: '/_authenticated/review'
+      path: '/review'
+      fullPath: '/review'
+      preLoaderRoute: typeof AuthenticatedReviewRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settlements': {
+      id: '/_authenticated/settlements'
+      path: '/settlements'
+      fullPath: '/settlements'
+      preLoaderRoute: typeof AuthenticatedSettlementsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/students': {
+      id: '/_authenticated/students'
+      path: '/students'
+      fullPath: '/students'
+      preLoaderRoute: typeof AuthenticatedStudentsRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/claims/': {
@@ -178,6 +327,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedClaimsNewRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/claims/$id/': {
+      id: '/_authenticated/claims/$id/'
+      path: '/claims/$id'
+      fullPath: '/claims/$id/'
+      preLoaderRoute: typeof AuthenticatedClaimsIdIndexRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/claims/$id/edit': {
       id: '/_authenticated/claims/$id/edit'
       path: '/claims/$id/edit'
@@ -190,16 +346,30 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteRouteChildren {
   AuthenticatedDashboardRoute: typeof AuthenticatedDashboardRoute
+  AuthenticatedNotificationsRoute: typeof AuthenticatedNotificationsRoute
+  AuthenticatedReportsRoute: typeof AuthenticatedReportsRoute
+  AuthenticatedReviewRoute: typeof AuthenticatedReviewRoute
+  AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
+  AuthenticatedSettlementsRoute: typeof AuthenticatedSettlementsRoute
+  AuthenticatedStudentsRoute: typeof AuthenticatedStudentsRoute
   AuthenticatedClaimsNewRoute: typeof AuthenticatedClaimsNewRoute
   AuthenticatedClaimsIndexRoute: typeof AuthenticatedClaimsIndexRoute
   AuthenticatedClaimsIdEditRoute: typeof AuthenticatedClaimsIdEditRoute
+  AuthenticatedClaimsIdIndexRoute: typeof AuthenticatedClaimsIdIndexRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedDashboardRoute: AuthenticatedDashboardRoute,
+  AuthenticatedNotificationsRoute: AuthenticatedNotificationsRoute,
+  AuthenticatedReportsRoute: AuthenticatedReportsRoute,
+  AuthenticatedReviewRoute: AuthenticatedReviewRoute,
+  AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
+  AuthenticatedSettlementsRoute: AuthenticatedSettlementsRoute,
+  AuthenticatedStudentsRoute: AuthenticatedStudentsRoute,
   AuthenticatedClaimsNewRoute: AuthenticatedClaimsNewRoute,
   AuthenticatedClaimsIndexRoute: AuthenticatedClaimsIndexRoute,
   AuthenticatedClaimsIdEditRoute: AuthenticatedClaimsIdEditRoute,
+  AuthenticatedClaimsIdIndexRoute: AuthenticatedClaimsIdIndexRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =
@@ -210,6 +380,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AboutRoute: AboutRoute,
   AuthRoute: AuthRoute,
+  DemoRoute: DemoRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

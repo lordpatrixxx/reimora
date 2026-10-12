@@ -19,16 +19,10 @@ export function SiteHeader() {
         <nav className="hidden items-center gap-7 text-sm font-medium text-muted-foreground md:flex">
           <a href="/#how" className="hover:text-foreground">How it works</a>
           <a href="/#features" className="hover:text-foreground">Features</a>
-          <a href="/#demo" className="hover:text-foreground">Demo</a>
+          <Link to="/demo" className="hover:text-foreground">Demo</Link>
           <Link to="/about" className="hover:text-foreground">About</Link>
         </nav>
-        <button
-          disabled
-          title="Sign-in arrives in the next build step"
-          className="rounded-full border border-primary/20 px-4 py-2 text-sm font-semibold text-primary disabled:opacity-70"
-        >
-          Sign in
-        </button>
+        <Link to="/auth" className="rounded-full border border-primary/20 px-4 py-2 text-sm font-semibold text-primary disabled:opacity-70">Sign in</Link>
       </div>
     </header>
   );
