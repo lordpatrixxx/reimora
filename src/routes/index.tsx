@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 
 export const Route = createFileRoute("/")({
@@ -16,6 +16,7 @@ export const Route = createFileRoute("/")({
 
 const inr = (n: number) => "₹" + n.toLocaleString("en-IN");
 
+
 function SampleTag() {
   return (
     <span className="rounded-full bg-warning-soft px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-warning">
@@ -24,76 +25,99 @@ function SampleTag() {
   );
 }
 
+const FIELDS = [
+  ["Vendor", "Shree Stationers"],
+  ["Amount", "₹750.00"],
+  ["Date", "14 Sep 2026"],
+  ["Paid via", "UPI"],
+] as const;
+const STAGES = ["Submitted", "Reviewed", "Approved", "Settled"];
+
 function HeroPreview() {
-  const [scanning, setScanning] = useState(false);
-  const [done, setDone] = useState(true);
-  const rescan = () => {
-    setDone(false);
-    setScanning(true);
-    setTimeout(() => { setScanning(false); setDone(true); }, 2200);
-  };
+  const [phase, setPhase] = useState<"scan" | "done">("scan");
+  const [shown, setShown] = useState(0);
+  useEffect(() => {
+    if (phase !== "scan") return;
+    setShown(0);
+    const timers = FIELDS.map((_, i) => setTimeout(() => setShown(i + 1), 700 + i * 350));
+    timers.push(setTimeout(() => setPhase("done"), 700 + FIELDS.length * 350 + 200));
+    return () => timers.forEach(clearTimeout);
+  }, [phase]);
+
   return (
-    <div className="relative animate-rise rounded-3xl border border-border bg-card p-4 shadow-float md:p-5" style={{ animationDelay: "120ms" }}>
-      <div className="mb-3 flex items-center justify-between">
-        <span className="text-xs font-semibold text-muted-foreground">Claim CS-0142 · Robotics club supplies</span>
-        <SampleTag />
-      </div>
-      <div className="grid gap-4 sm:grid-cols-[0.9fr_1.1fr]">
-        {/* receipt */}
-        <div className="relative overflow-hidden rounded-xl border border-dashed border-border bg-muted p-4 font-mono text-[11px] leading-relaxed text-foreground/80">
-          {scanning && <div className="scan-line" />}
-          <p className="text-center font-bold">SHREE STATIONERS</p>
-          <p className="text-center text-muted-foreground">Akurdi, Pune · INV-2291</p>
-          <div className="my-2 border-t border-dashed border-border" />
-          {[["Notebooks ×6", 360], ["Chart paper ×10", 150], ["Markers set", 240]].map(([a, b]) => (
-            <div key={a as string} className="flex justify-between"><span>{a}</span><span className="tabular">{b}.00</span></div>
-          ))}
-          <div className="my-2 border-t border-dashed border-border" />
-          <div className="flex justify-between font-bold"><span>TOTAL</span><span className="tabular">750.00</span></div>
-          <p className="mt-2 text-muted-foreground">14/09/2026 · PAID UPI</p>
+    <div className="relative animate-rise" style={{ animationDelay: "120ms" }}>
+      <div className="absolute -inset-6 -z-10 rounded-[2.5rem] bg-accent/60 blur-2xl" aria-hidden />
+      <div className="rounded-3xl border border-border bg-card p-5 shadow-float md:p-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <p className="text-[11px] font-semibold uppercase tracking-widest text-muted-foreground">Claim CS-0142</p>
+            <p className="font-semibold text-primary">Robotics club supplies</p>
+          </div>
+          <SampleTag />
         </div>
-        {/* extracted */}
-        <div className="space-y-2.5">
-          <div className={`space-y-2.5 transition-opacity duration-300 ${done ? "opacity-100" : "opacity-30"}`}>
-            {[["Vendor", "Shree Stationers"], ["Amount", inr(750)], ["Date", "14 Sep 2026"]].map(([k, v]) => (
-              <div key={k} className="flex items-center justify-between rounded-lg border border-border px-3 py-2 text-sm">
-                <span className="text-muted-foreground">{k}</span><span className="font-semibold tabular">{v}</span>
-              </div>
-            ))}
-            <div className="rounded-lg bg-accent px-3 py-2 text-sm">
-              <div className="flex items-center justify-between">
-                <span className="text-muted-foreground">Suggested</span>
-                <span className="rounded-full bg-lime px-2 py-0.5 text-xs font-bold text-lime-foreground">Stationery</span>
-              </div>
-              <p className="mt-1 text-xs text-muted-foreground">Items list notebooks, chart paper and markers.</p>
+
+        <div className="mt-5 grid items-center gap-6 sm:grid-cols-[180px_1fr]">
+          {/* Receipt */}
+          <div className="relative mx-auto w-[180px] float-receipt">
+            <div className="relative overflow-hidden rounded-t-xl border border-border bg-background p-4 font-mono text-[10.5px] leading-relaxed text-foreground/80 shadow-soft receipt-edge pb-6">
+              {phase === "scan" && <span className="beam" />}
+              <p className="text-center text-[11px] font-bold tracking-wide">SHREE STATIONERS</p>
+              <p className="text-center text-muted-foreground">Akurdi · INV-2291</p>
+              <div className="my-2 border-t border-dashed border-border" />
+              {[["Notebooks ×6", "360"], ["Chart paper ×10", "150"], ["Markers", "240"]].map(([a, b]) => (
+                <div key={a} className="flex justify-between"><span>{a}</span><span className="tabular">{b}</span></div>
+              ))}
+              <div className="my-2 border-t border-dashed border-border" />
+              <div className="flex justify-between font-bold"><span>TOTAL</span><span className="tabular">750.00</span></div>
+              <p className="mt-1 text-muted-foreground">14/09/26 · UPI ✓</p>
             </div>
           </div>
-          <button onClick={rescan} disabled={scanning} className="w-full rounded-lg border border-border py-2 text-xs font-semibold text-primary transition hover:bg-muted disabled:opacity-60">
-            {scanning ? "Reading receipt…" : "Replay scan"}
-          </button>
-        </div>
-      </div>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2">
-        <div className="rounded-xl border border-border p-3">
-          <p className="mb-2 text-xs font-semibold text-muted-foreground">Approval</p>
-          <ol className="space-y-1.5 text-xs">
-            {[["Submitted", true], ["Faculty review", true], ["Approved", true], ["Settled", false]].map(([s, ok]) => (
-              <li key={s as string} className="flex items-center gap-2">
-                <span className={`h-2 w-2 rounded-full ${ok ? "bg-primary" : "border border-border bg-card"}`} />
-                <span className={ok ? "" : "text-muted-foreground"}>{s}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-        <div className="rounded-xl bg-primary p-3 text-primary-foreground">
-          <p className="mb-2 text-xs font-semibold opacity-70">Settlement</p>
-          <div className="space-y-1 text-xs tabular">
-            <div className="flex justify-between"><span>Approved</span><span>{inr(2650)}</span></div>
-            <div className="flex justify-between"><span>Advance applied</span><span>− {inr(2000)}</span></div>
-            <div className="mt-1 flex justify-between border-t border-primary-foreground/20 pt-1 text-sm font-bold">
-              <span>Payable to student</span><span className="text-lime dark:text-primary-foreground dark:underline dark:decoration-2">{inr(650)}</span>
+
+          {/* Extracted */}
+          <div>
+            <div className="mb-2 flex items-center justify-between">
+              <span className="flex items-center gap-1.5 text-xs font-semibold text-muted-foreground">
+                <span className={`h-1.5 w-1.5 rounded-full ${phase === "scan" ? "animate-pulse bg-warning" : "bg-primary"}`} />
+                {phase === "scan" ? "Reading receipt…" : "Read — waiting for your confirmation"}
+              </span>
+              <button onClick={() => setPhase("scan")} disabled={phase === "scan"} className="text-xs font-semibold text-primary hover:underline disabled:opacity-40">Replay</button>
+            </div>
+            <dl className="divide-y divide-border overflow-hidden rounded-xl border border-border">
+              {FIELDS.map(([k, v], i) => (
+                <div key={k} className="flex items-center justify-between px-3 py-2 text-sm">
+                  <dt className="text-muted-foreground">{k}</dt>
+                  {i < shown ? <dd className="animate-fade font-semibold tabular">{v}</dd> : <dd className="skeleton h-3 w-20" />}
+                </div>
+              ))}
+            </dl>
+            <div className={`mt-2 flex items-center gap-2 rounded-xl bg-accent px-3 py-2 text-xs transition-opacity duration-500 ${phase === "done" ? "opacity-100" : "opacity-0"}`}>
+              <span className="rounded-full bg-lime px-2 py-0.5 font-bold text-lime-foreground">Stationery</span>
+              <span className="text-muted-foreground">suggested category</span>
             </div>
           </div>
+        </div>
+
+        {/* Progress */}
+        <div className="mt-6">
+          <div className="relative flex justify-between">
+            <div className="absolute left-2 right-2 top-[7px] h-0.5 bg-border" aria-hidden />
+            <div className="absolute left-2 top-[7px] h-0.5 bg-primary" style={{ width: "calc(66% - 8px)" }} aria-hidden />
+            {STAGES.map((s, i) => (
+              <div key={s} className="relative flex flex-col items-center gap-1.5">
+                <span className={`h-4 w-4 rounded-full border-2 ${i < 3 ? "border-primary bg-primary" : "border-border bg-card"}`} />
+                <span className={`text-[11px] font-semibold ${i < 3 ? "text-foreground" : "text-muted-foreground"}`}>{s}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Settlement */}
+        <div className="mt-5 grid grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-2 rounded-2xl bg-primary px-4 py-3 text-primary-foreground tabular">
+          <div><p className="text-[10px] uppercase tracking-wider opacity-60">Approved</p><p className="font-bold">₹2,650</p></div>
+          <span className="opacity-50">−</span>
+          <div><p className="text-[10px] uppercase tracking-wider opacity-60">Advance</p><p className="font-bold">₹2,000</p></div>
+          <span className="opacity-50">=</span>
+          <div className="text-right"><p className="text-[10px] uppercase tracking-wider opacity-60">To student</p><p className="text-lg font-bold">₹650</p></div>
         </div>
       </div>
     </div>

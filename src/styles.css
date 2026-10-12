@@ -161,3 +161,23 @@ img, video, .preserve-colors { color-scheme: normal; filter: none; }
   position: relative; overflow: hidden; height: 4px; border-radius: 999px; background: var(--muted);
   &::after { content: ""; position: absolute; inset: 0; width: 40%; border-radius: 999px; background: var(--primary); animation: indeterminate 1.2s ease-in-out infinite; }
 }
+
+/* ---- Boot v2 + hero ---- */
+@keyframes line-grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes beam { 0% { top: 8%; opacity: 0; } 15% { opacity: 1; } 85% { opacity: 1; } 100% { top: 88%; opacity: 0; } }
+@keyframes letter { from { opacity: 0; transform: translateY(8px); filter: blur(4px); } to { opacity: 1; transform: none; filter: none; } }
+@keyframes float-y { 0%,100% { transform: translateY(0) rotate(-3deg); } 50% { transform: translateY(-6px) rotate(-3deg); } }
+@keyframes ring-pulse { 0% { transform: scale(.8); opacity: .6; } 100% { transform: scale(1.8); opacity: 0; } }
+@utility line-grow { transform-origin: left; animation: line-grow .45s cubic-bezier(.2,.7,.2,1) both; }
+@utility beam {
+  position: absolute; left: -6%; right: -6%; height: 2px; background: var(--lime);
+  box-shadow: 0 0 22px 6px color-mix(in oklab, var(--lime) 55%, transparent);
+  animation: beam 1.4s ease-in-out infinite;
+}
+@utility letter-in { animation: letter .5s cubic-bezier(.2,.7,.2,1) both; }
+@utility float-receipt { animation: float-y 6s ease-in-out infinite; }
+@utility ring-pulse { animation: ring-pulse 1.6s ease-out infinite; }
+@utility receipt-edge {
+  -webkit-mask: linear-gradient(#000 0 0) top/100% calc(100% - 10px) no-repeat, radial-gradient(circle 6px at 50% 100%, transparent 98%, #000) bottom/14px 10px repeat-x;
+  mask: linear-gradient(#000 0 0) top/100% calc(100% - 10px) no-repeat, radial-gradient(circle 6px at 50% 0, transparent 98%, #000) bottom/14px 10px repeat-x;
+}
