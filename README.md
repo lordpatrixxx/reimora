@@ -6,7 +6,7 @@ This project was built with [Lovable](https://lovable.dev).
 
 **Live app**: https://reimora.lovable.app
 
-## Build with Lovable
+## Build with Lovable(Frontend)
 
 Continue developing this project in the [Lovable editor](https://lovable.dev/projects/de909860-ee10-437a-8607-773af972194a).
 
